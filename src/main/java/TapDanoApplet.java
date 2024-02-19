@@ -2,14 +2,19 @@ package TapDano;
 
 import javacard.framework.*;
 
-public class TapDano extends Applet {
-  private static final boolean DEBUG = false;
+public class TapDanoApplet extends Applet {
 
-  protected TapDano() {
+  protected TapDanoApplet() {
+    if (Constants.DEBUG) System.out.println("TapDanoApplet constructor");
   }
 
-  public static void install(byte[] bArray, short bOffset, byte bLength) {
-    new TapDano().register();
+  public static void install(byte[] buf, short off, byte len) {
+    if (Constants.DEBUG) System.out.println("TapDanoApplet install");
+    short pos = off;
+    // find AID
+    byte  lenAID = buf[pos++];
+    short offAID = pos;
+    new TapDanoApplet().register(buf, offAID, lenAID);
   }
 
   public boolean select() {
@@ -17,11 +22,21 @@ public class TapDano extends Applet {
   }
 
   public void process(APDU apdu) {
-    if (selectingApplet()) {
-      return;
-    }
+    if (selectingApplet()) return;
 
     byte[] buffer = apdu.getBuffer();
+    byte cla = buffer[ISO7816.OFFSET_CLA];
+    byte ins = buffer[ISO7816.OFFSET_INS];
+
+    switch (ins) {
+      case (byte)0x77:
+      if (Constants.DEBUG) System.out.println("### 0x77");
+        break;
+      default:
+        ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);
+    }
+
+    /*
     short bytesRead = apdu.setIncomingAndReceive();
 
     if (DEBUG) {
@@ -44,5 +59,6 @@ public class TapDano extends Applet {
     apdu.setOutgoing();
     apdu.setOutgoingLength(bytesRead);
     apdu.sendBytes(ISO7816.OFFSET_CDATA, bytesRead);
+    */
   }
 }

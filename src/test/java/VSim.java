@@ -12,8 +12,15 @@ import java.lang.reflect.Field;
  */
 public class VSim {
 
-    static final AID appletAID = AIDUtil.create("54415044414E4F0001");
     static final int PORT = 35963;
+
+    static final byte[] AID_TapDano = {(byte) 0x08, (byte) 0x54, (byte) 0x61, (byte) 0x70, (byte) 0x44, (byte) 0x61, (byte) 0x6E, (byte) 0x6F, (byte) 0x01};
+    static final byte[] AID_FIDO2 =   {(byte) 0x08, (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x06, (byte) 0x47, (byte) 0x2F, (byte) 0x00, (byte) 0x01};
+    static final byte[] AID_NDEF =    {(byte) 0x07, (byte) 0xD2, (byte) 0x76, (byte) 0x00, (byte) 0x00, (byte) 0x85, (byte) 0x01, (byte) 0x01};
+
+    static final AID appletAID_TapDano = AIDUtil.create("54617044616E6F01");
+    static final AID appletAID_FIDO2 = AIDUtil.create("A0000006472F0001");
+    static final AID appletAID_NDEF = AIDUtil.create("D2760000850101");
 
     public static Simulator startBackgroundSimulator() throws Exception {
         System.setProperty("com.licel.jcardsim.vsmartcard.reloader.port", "" + PORT);
@@ -30,12 +37,11 @@ public class VSim {
         return (Simulator) f.get(sc);
     }
 
-    public static synchronized void installApplet(Simulator sim, byte[] params) {
-        if (params.length > 255) {
-            throw new IllegalArgumentException("Install parameters too long!");
-        }
-        sim.installApplet(appletAID, TapDano.class, params, (short) 0, (byte) params.length);
-        sim.selectApplet(appletAID);
+    public static synchronized void installApplet(Simulator sim) {
+        sim.installApplet(appletAID_TapDano, AppletInstaller.class, AID_TapDano, (short)0, (byte)AID_TapDano.length);
+        sim.installApplet(appletAID_FIDO2, AppletInstaller.class, AID_FIDO2, (short)0, (byte)AID_FIDO2.length);
+        sim.installApplet(appletAID_NDEF, AppletInstaller.class, AID_NDEF, (short)0, (byte)AID_NDEF.length);
+        //sim.selectApplet(appletAID_TapDano);
     }
 
     public static Simulator startForegroundSimulator() {
@@ -48,13 +54,12 @@ public class VSim {
 
     public static synchronized void softReset(Simulator sim) {
         sim.reset();
-        sim.selectApplet(appletAID);
+        //sim.selectApplet(appletAID_TapDano);
     }
 
     public static void main(String[] args) throws Exception {
         Simulator sim = startBackgroundSimulator();
-
-        installApplet(sim, new byte[0]);
+        installApplet(sim);
     }
 
 }
