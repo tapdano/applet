@@ -1,9 +1,8 @@
-package TapDano;
-
 import com.licel.jcardsim.base.Simulator;
 import com.licel.jcardsim.remote.VSmartCard;
 import com.licel.jcardsim.utils.AIDUtil;
 import javacard.framework.AID;
+import tapdano.AppletInstaller;
 
 import java.lang.reflect.Field;
 
