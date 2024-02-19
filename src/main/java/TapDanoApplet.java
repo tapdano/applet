@@ -2,7 +2,7 @@ package TapDano;
 
 import javacard.framework.*;
 
-public class TapDanoApplet extends Applet {
+public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   protected TapDanoApplet() {
     if (Constants.DEBUG) System.out.println("TapDanoApplet constructor");
@@ -15,6 +15,10 @@ public class TapDanoApplet extends Applet {
     byte  lenAID = buf[pos++];
     short offAID = pos;
     new TapDanoApplet().register(buf, offAID, lenAID);
+  }
+
+  public Shareable getShareableInterfaceObject(AID clientAID, byte parameter) {
+    return this;
   }
 
   public boolean select() {
@@ -60,5 +64,18 @@ public class TapDanoApplet extends Applet {
     apdu.setOutgoingLength(bytesRead);
     apdu.sendBytes(ISO7816.OFFSET_CDATA, bytesRead);
     */
+  }
+
+  public byte[] exec(byte origin, byte[] buf) {
+    if (Constants.DEBUG) System.out.println("TapDanoApplet - exec (origin = " + origin + ")");
+    byte[] result = new byte[1];
+    result[0] = (byte)0x01;
+    if (origin == (byte)1) {
+      result[0] = (byte)0x05;
+    }
+    if (origin == (byte)2) {
+      result[0] = (byte)0x06;
+    }
+    return result;
   }
 }

@@ -32,6 +32,17 @@ public class FIDO2Applet extends Applet {
       case (byte)0x79:
         if (Constants.DEBUG) System.out.println("### 0x79");
         break;
+      case (byte)0x89:
+        if (Constants.DEBUG) System.out.println("### 0x89");
+        AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
+        TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+        if (tapDano != null) {
+          byte[] result = tapDano.exec((byte)0x02, buffer);
+          apdu.setOutgoing();
+          apdu.setOutgoingLength((short)result.length);
+          apdu.sendBytesLong(result, (short)0, (short)result.length);
+        }
+        break;
       default:
         ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);
     }

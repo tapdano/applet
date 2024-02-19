@@ -39,6 +39,17 @@ public class NDEFApplet extends Applet {
       case (byte)0x78:
         if (Constants.DEBUG) System.out.println("### 0x78");
         break;
+      case (byte)0x88:
+        if (Constants.DEBUG) System.out.println("### 0x88");
+        AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
+        TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+        if (tapDano != null) {
+          byte[] result = tapDano.exec((byte)0x01, buffer);
+          apdu.setOutgoing();
+          apdu.setOutgoingLength((short)result.length);
+          apdu.sendBytesLong(result, (short)0, (short)result.length);
+        }
+        break;
       case INS_SELECT:
         processSelect(apdu);
         break;
