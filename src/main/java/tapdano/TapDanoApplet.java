@@ -8,11 +8,7 @@ import tapdano.swalgs.*;
 public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   public final static boolean DEBUG = true;
-  public final static short CARD = OperationSupport.SIMULATOR; // TODO set your card
-  // public final static short CARD = OperationSupport.JCOP4_P71; // NXP J3Rxxx
-  // public final static short CARD = OperationSupport.JCOP3_P60; // NXP J3H145
-  // public final static short CARD = OperationSupport.JCOP21; // NXP J2E145
-  // public final static short CARD = OperationSupport.SECORA; // Infineon Secora ID S
+  public final static short CARD = OperationSupport.SIMULATOR; // SIMULATOR / JCOP4_P71
 
   private ResourceManager rm;
   private ECCurve curve;
@@ -61,56 +57,33 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   public void process(APDU apdu) {
     if (selectingApplet()) return;
 
-    if (!initialized) {
-      initialize(apdu);
-    }
-
-    if (apdu.getBuffer()[ISO7816.OFFSET_CLA] != Consts.CLA_ED25519) ISOException.throwIt(ISO7816.SW_CLA_NOT_SUPPORTED);
+    if (!initialized) initialize();
 
     byte[] buffer = apdu.getBuffer();
-    byte cla = buffer[ISO7816.OFFSET_CLA];
-    byte ins = buffer[ISO7816.OFFSET_INS];
+
+    if (buffer[ISO7816.OFFSET_CLA] != Consts.CLA_ED25519) ISOException.throwIt(ISO7816.SW_CLA_NOT_SUPPORTED);
 
     try {
-      switch (apdu.getBuffer()[ISO7816.OFFSET_INS]) {
-        case (byte) 0x77:
-          if (Constants.DEBUG)
-            System.out.println("### 0x77");
-          break;
+      switch (buffer[ISO7816.OFFSET_INS]) {
         case Consts.INS_KEYGEN:
-          generateKeypair(apdu);
+          apdu.setOutgoingAndSend((short)0, generateKeypair(buffer));
           break;
-
-        case Consts.INS_SET_PUB:
-          setPublicKey(apdu);
+        case Consts.INS_SIGN:
+          apdu.setOutgoingAndSend((short)0, sign(buffer));
           break;
-        case Consts.INS_SIGN_INIT:
-          signInit(apdu);
-          break;
-        case Consts.INS_SIGN_NONCE:
-          signNonce(apdu);
-          break;
-        case Consts.INS_SIGN_FINALIZE:
-          signFinalize(apdu);
-          break;
-        case Consts.INS_SIGN_UPDATE:
-          signUpdate(apdu);
-          break;
-
         case Consts.INS_GET_PRIV:
-          if (!DEBUG) {
-            ISOException.throwIt(Consts.E_DEBUG_DISABLED);
-          }
-          // privateKey.copyToByteArray(apdu.getBuffer(), (short) 0);
-          // apdu.setOutgoingAndSend((short) 0, (short) 32);
-          Util.arrayCopyNonAtomic(masterKey, (short) 0, apdu.getBuffer(), (short) 0, (short) masterKey.length);
+          if (!DEBUG) ISOException.throwIt(Consts.E_DEBUG_DISABLED);
+          privateKey.copyToByteArray(buffer, (short) 0);
+          apdu.setOutgoingAndSend((short) 0, (short) 32);
+          break;
+        case Consts.INS_GET_MASTER:
+          if (!DEBUG) ISOException.throwIt(Consts.E_DEBUG_DISABLED);
+          Util.arrayCopyNonAtomic(masterKey, (short) 0, buffer, (short) 0, (short) masterKey.length);
           apdu.setOutgoingAndSend((short) 0, (short) masterKey.length);
           break;
         case Consts.INS_GET_PRIV_NONCE:
-          if (!DEBUG) {
-            ISOException.throwIt(Consts.E_DEBUG_DISABLED);
-          }
-          privateNonce.copyToByteArray(apdu.getBuffer(), (short) 0);
+          if (!DEBUG) ISOException.throwIt(Consts.E_DEBUG_DISABLED);
+          privateNonce.copyToByteArray(buffer, (short) 0);
           apdu.setOutgoingAndSend((short) 0, (short) 32);
           break;
         default:
@@ -143,7 +116,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     }
   }
 
-  private void initialize(APDU apdu) {
+  private void initialize() {
     if (initialized) ISOException.throwIt(Consts.E_ALREADY_INITIALIZED);
 
     try {
@@ -175,11 +148,8 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     initialized = true;
   }
 
-  private void generateKeypair(APDU apdu) {
+  private short generateKeypair(byte[] buffer) {
     if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
-
-    byte[] apduBuffer = apdu.getBuffer();
-    boolean offload = apduBuffer[ISO7816.OFFSET_P1] != (byte) 0x00;
 
     random.generateData(masterKey, (short) 0, (short) 32);
 
@@ -200,69 +170,33 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     privateKey.fromByteArray(ramArray, (short) 0, (short) 32); // Reload private key
     privateKey.mod(curve.rBN);
 
-    if (!offload) {
-      point.multiplication(eight); // Compensate bit shift
+    point.multiplication(eight); // Compensate bit shift
 
-      encodeEd25519(point, publicKey, (short) 0);
+    encodeEd25519(point, publicKey, (short) 0);
 
-      Util.arrayCopyNonAtomic(publicKey, (short) 0, apduBuffer, (short) 0, (short) 32);
-      apdu.setOutgoingAndSend((short) 0, (short) 32);
-    } else {
-      point.getW(apduBuffer, (short) 0);
-      apdu.setOutgoingAndSend((short) 0, curve.POINT_SIZE);
-    }
+    Util.arrayCopyNonAtomic(publicKey, (short) 0, buffer, (short) 0, (short) 32);
+    return (short)32;
   }
 
-  private void setPublicKey(APDU apdu) {
+  private short sign(byte[] buffer) {
     if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
 
-    byte[] apduBuffer = apdu.getBuffer();
-    Util.arrayCopyNonAtomic(apduBuffer, ISO7816.OFFSET_CDATA, publicKey, (short) 0, (short) publicKey.length);
-    apdu.setOutgoing();
-  }
-
-  private void signInit(APDU apdu) {
-    if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
-
-    byte[] apduBuffer = apdu.getBuffer();
-    boolean offload = apduBuffer[ISO7816.OFFSET_P1] != (byte) 0x00;
+    short len = (short) ((short) buffer[ISO7816.OFFSET_LC] & (short) 0xff);
 
     // Generate nonce R
-    randomNonce();
+    deterministicNonce(buffer, ISO7816.OFFSET_CDATA, len);
+
     point.setW(curve.G, (short) 0, curve.POINT_SIZE);
     point.multiplication(privateNonce);
     hasher.reset();
-    if (offload) {
-      point.getW(apduBuffer, (short) 0);
-      apdu.setOutgoingAndSend((short) 0, curve.POINT_SIZE);
-    } else {
-      encodeEd25519(point, ramArray, (short) 0);
-      Util.arrayCopyNonAtomic(ramArray, (short) 0, publicNonce, (short) 0, curve.COORD_SIZE);
-      hasher.update(ramArray, (short) 0, curve.COORD_SIZE); // R
-      hasher.update(publicKey, (short) 0, curve.COORD_SIZE); // A
-      apdu.setOutgoing();
-    }
-  }
-
-  private void signNonce(APDU apdu) {
-    if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
-
-    byte[] apduBuffer = apdu.getBuffer();
-    hasher.reset();
-    Util.arrayCopyNonAtomic(apduBuffer, ISO7816.OFFSET_CDATA, publicNonce, (short) 0, curve.COORD_SIZE);
-    hasher.update(apduBuffer, ISO7816.OFFSET_CDATA, curve.COORD_SIZE); // R
+    encodeEd25519(point, ramArray, (short) 0);
+    Util.arrayCopyNonAtomic(ramArray, (short) 0, publicNonce, (short) 0, curve.COORD_SIZE);
+    hasher.update(ramArray, (short) 0, curve.COORD_SIZE); // R
     hasher.update(publicKey, (short) 0, curve.COORD_SIZE); // A
-    apdu.setOutgoing();
-  }
-
-  private void signFinalize(APDU apdu) {
-    if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
-
-    byte[] apduBuffer = apdu.getBuffer();
-    short len = (short) ((short) apduBuffer[ISO7816.OFFSET_P1] & (short) 0xff);
-    hasher.doFinal(apduBuffer, ISO7816.OFFSET_CDATA, len, apduBuffer, (short) 0); // m
-    changeEndianity(apduBuffer, (short) 0, (short) 64);
-    signature.fromByteArray(apduBuffer, (short) 0, (short) 64);
+    
+    hasher.doFinal(buffer, ISO7816.OFFSET_CDATA, len, buffer, (short) 0); // m
+    changeEndianity(buffer, (short) 0, (short) 64);
+    signature.fromByteArray(buffer, (short) 0, (short) 64);
     signature.mod(curve.rBN);
     signature.resize((short) 32);
 
@@ -271,19 +205,11 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     signature.modAdd(privateNonce, curve.rBN);
 
     // Return signature (R, s)
-    Util.arrayCopyNonAtomic(publicNonce, (short) 0, apduBuffer, (short) 0, curve.COORD_SIZE);
-    signature.prependZeros(curve.COORD_SIZE, apduBuffer, curve.COORD_SIZE);
-    changeEndianity(apduBuffer, curve.COORD_SIZE, curve.COORD_SIZE);
-    apdu.setOutgoingAndSend((short) 0, (short) (curve.COORD_SIZE + curve.COORD_SIZE));
-  }
+    Util.arrayCopyNonAtomic(publicNonce, (short) 0, buffer, (short) 0, curve.COORD_SIZE);
+    signature.prependZeros(curve.COORD_SIZE, buffer, curve.COORD_SIZE);
+    changeEndianity(buffer, curve.COORD_SIZE, curve.COORD_SIZE);
 
-  private void signUpdate(APDU apdu) {
-    if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
-
-    byte[] apduBuffer = apdu.getBuffer();
-    short len = (short) ((short) apduBuffer[ISO7816.OFFSET_P1] & (short) 0xff);
-    hasher.update(apduBuffer, ISO7816.OFFSET_CDATA, len);
-    apdu.setOutgoing();
+    return (short)(curve.COORD_SIZE + curve.COORD_SIZE);
   }
 
   private void encodeEd25519(ECPoint point, byte[] buffer, short offset) {
@@ -323,20 +249,12 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     }
   }
 
-  // CAN BE USED ONLY IF NO OFFLOADING IS USED; OTHERWISE INSECURE!
   private void deterministicNonce(byte[] msg, short offset, short len) {
     hasher.reset();
     hasher.update(prefix, (short) 0, (short) 32);
     hasher.doFinal(msg, offset, len, ramArray, (short) 0);
     changeEndianity(ramArray, (short) 0, (short) 64);
     privateNonce.fromByteArray(ramArray, (short) 0, (short) 64);
-    privateNonce.mod(curve.rBN);
-    privateNonce.resize((short) 32);
-  }
-
-  private void randomNonce() {
-    random.generateData(ramArray, (short) 0, (short) 32);
-    privateNonce.fromByteArray(ramArray, (short) 0, (short) 32);
     privateNonce.mod(curve.rBN);
     privateNonce.resize((short) 32);
   }

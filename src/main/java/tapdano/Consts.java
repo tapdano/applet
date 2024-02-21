@@ -2,14 +2,11 @@ package tapdano;
 
 public class Consts {
     public static final byte CLA_ED25519 = (byte) 0x00;
-    public static final byte INS_KEYGEN = (byte) 0xD0;
-    public static final byte INS_GET_PRIV = (byte) 0xD2;
-    public static final byte INS_SET_PUB = (byte) 0xD3;
-    public static final byte INS_SIGN_INIT = (byte) 0xD4;
-    public static final byte INS_SIGN_NONCE = (byte) 0xD5;
-    public static final byte INS_SIGN_FINALIZE = (byte) 0xD6;
-    public static final byte INS_SIGN_UPDATE = (byte) 0xD7;
-    public static final byte INS_GET_PRIV_NONCE = (byte) 0xD8;
+    public static final byte INS_KEYGEN         = (byte) 0xD0;
+    public static final byte INS_SIGN           = (byte) 0xD1;
+    public static final byte INS_GET_PRIV       = (byte) 0xD2;
+    public static final byte INS_GET_PRIV_NONCE = (byte) 0xD3;
+    public static final byte INS_GET_MASTER     = (byte) 0xD4;
 
     public final static short E_ALREADY_INITIALIZED = (short) 0xee00;
     public final static short E_UNINITIALIZED = (short) 0xee01;
