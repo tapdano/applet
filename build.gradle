@@ -27,7 +27,7 @@ javacard {
             aid PackageID
             output 'TapDano.cap'
             applet {
-                className 'tapdano.AppletInstaller'
+                className 'AppletInstaller'
                 aid ApplicationID
             }
         }
@@ -36,5 +36,5 @@ javacard {
 
 task runVSim(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
-    main = 'VSim'
+    main = 'tapdano.VSim'
 }
