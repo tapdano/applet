@@ -129,6 +129,7 @@ public final class NDEFApplet extends Applet {
    * @param len length of install data in buf
    */
   public static void install(byte[] buf, short off, byte len) {
+    if (Constants.DEBUG) System.out.println("NDEFApplet install");
     short pos = off;
     // find AID
     byte lenAID = buf[pos++];

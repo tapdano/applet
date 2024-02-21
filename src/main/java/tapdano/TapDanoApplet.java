@@ -8,7 +8,7 @@ import tapdano.swalgs.*;
 public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   public final static boolean DEBUG = true;
-  public final static short CARD = OperationSupport.JCOP4_P71; // TODO set your card
+  public final static short CARD = OperationSupport.SIMULATOR; // TODO set your card
   // public final static short CARD = OperationSupport.JCOP4_P71; // NXP J3Rxxx
   // public final static short CARD = OperationSupport.JCOP3_P60; // NXP J3H145
   // public final static short CARD = OperationSupport.JCOP21; // NXP J2E145

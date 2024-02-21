@@ -41,7 +41,7 @@ public class VSim {
         sim.installApplet(appletAID_TapDano, AppletInstaller.class, AID_TapDano, (short)0, (byte)AID_TapDano.length);
         sim.installApplet(appletAID_FIDO2, AppletInstaller.class, AID_FIDO2, (short)0, (byte)AID_FIDO2.length);
         sim.installApplet(appletAID_NDEF, AppletInstaller.class, AID_NDEF, (short)0, (byte)AID_NDEF.length);
-        sim.selectApplet(appletAID_TapDano);
+        //sim.selectApplet(appletAID_TapDano);
     }
 
     public static Simulator startForegroundSimulator() {
@@ -54,7 +54,7 @@ public class VSim {
 
     public static synchronized void softReset(Simulator sim) {
         sim.reset();
-        sim.selectApplet(appletAID_TapDano);
+        //sim.selectApplet(appletAID_TapDano);
     }
 
     public static void main(String[] args) throws Exception {
