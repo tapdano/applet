@@ -2380,7 +2380,11 @@ public class jcmathlib {
             verifyEcdsa = Signature.getInstance((byte) 33, false);
             if (OperationSupport.getInstance().EC_HW_ADD) {
                 // ecAddKA = KeyAgreement.getInstance(KeyAgreement.ALG_EC_PACE_GM, false);
-                ecAddKA = KeyAgreement.getInstance((byte) 5, false);
+                try {
+                    ecAddKA = KeyAgreement.getInstance((byte) 5, false);
+                } catch (Exception e) {
+                    if (Constants.DEBUG) System.out.println("ERROR: KeyAgreement.getInstance");
+                }
             }
 
             // RSA Sq Helpers
