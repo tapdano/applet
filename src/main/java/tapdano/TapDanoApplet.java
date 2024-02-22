@@ -8,7 +8,7 @@ import tapdano.swalgs.*;
 public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   public final static boolean DEBUG = true;
-  public final static short CARD = OperationSupport.SIMULATOR; // SIMULATOR / JCOP4_P71
+  public final static short CARD = OperationSupport.JCOP4_P71; // SIMULATOR / JCOP4_P71
 
   private ResourceManager rm;
   private ECCurve curve;
@@ -20,6 +20,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   private final byte[] prefix = new byte[32];
   private final byte[] publicKey = new byte[32];
   private final byte[] publicNonce = new byte[32];
+  private boolean pkGenerated = false;
 
   private MessageDigest hasher;
 
@@ -150,6 +151,13 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   private short generateKeypair(byte[] buffer) {
     if (!initialized) initialize();
+
+    if (pkGenerated) {
+      Util.arrayCopyNonAtomic(publicKey, (short) 0, buffer, (short) 0, (short) 32);
+      return (short)32;
+    }
+
+    pkGenerated = true;
 
     random.generateData(masterKey, (short) 0, (short) 32);
 

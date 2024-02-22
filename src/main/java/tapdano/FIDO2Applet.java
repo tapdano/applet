@@ -41,6 +41,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
     private short filledAttestationData;
     private final MessageDigest sha256;
     private boolean alwaysUv;
+    private boolean Up;
     private final TransientStorage transientStorage;
     private BufferManager bufferManager;
     private final byte[] largeBlobStoreA;
@@ -199,7 +200,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         outputIdx = packCredentialId(credStorageBuffer, credStorageOffset, outputBuffer, outputIdx);
 
         outputBuffer[outputIdx++] = 0x02;
-        byte flags = transientStorage.hasUPOption() ? (byte) 0x01 : 0x00;
+        byte flags = Up ? (byte) 0x01 : 0x00;
         short adLen = (short)37;
         final short adAddlBytes = writeADBasic(outputBuffer, adLen, outputIdx, flags, scratchRPIDHashBuffer, scratchRPIDHashIdx);
         final short startOfAD = (short) (outputIdx + adAddlBytes);
@@ -207,19 +208,14 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         Util.arrayCopyNonAtomic(clientDataHashBuffer, clientDataHashIdx, outputBuffer, outputIdx, CLIENT_DATA_HASH_LEN);
 
         outputBuffer[outputIdx++] = 0x03;
-        if (transientStorage.hasUPOption()) {
-            AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
-            TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
-            if (tapDano != null) {
-              byte[] result = tapDano.exec((byte)0x02, credStorageBuffer, credStorageOffset, credLen);
-              outputIdx = encodeIntLenTo(outputBuffer, outputIdx, (short)result.length, true);
-              Util.arrayCopyNonAtomic(result, (short)0, outputBuffer, outputIdx, (short)result.length);
-              outputIdx += (short)result.length;
-            }
-        } else {
-            short fakeSignatureLength = 32;
-            outputIdx = encodeIntLenTo(outputBuffer, outputIdx, fakeSignatureLength, true);
-            for (short i = 0; i < fakeSignatureLength; i++) outputBuffer[outputIdx++] = (byte)0x00;
+
+        AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
+        TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+        if (tapDano != null) {
+            byte[] result = tapDano.exec((byte)0x02, credStorageBuffer, credStorageOffset, credLen);
+            outputIdx = encodeIntLenTo(outputBuffer, outputIdx, (short)result.length, true);
+            Util.arrayCopyNonAtomic(result, (short)0, outputBuffer, outputIdx, (short)result.length);
+            outputIdx += (short)result.length;
         }
 
         outputBuffer[outputIdx++] = 0x04; 
@@ -265,14 +261,18 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                 if (val == (byte) 0xF5) { // true
                     if (buffer[pOrVPos] == 'p') {
                         transientStorage.setUPOption(true);
+                        Up = true;
                     } else {
                         transientStorage.setUVOption(true);
+                        Up = true;
                     }
                 } else if (val == (byte) 0xF4) { // false
                     if (buffer[pOrVPos] == 'p') {
                         transientStorage.setUPOption(false);
+                        Up = false;
                     } else {
                         transientStorage.setUVOption(false);
+                        Up = false;
                     }
                 }
             }
@@ -281,6 +281,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         if (requireUP) {
             // UP defaults to true in this case
             transientStorage.setUPOption(true);
+            Up = true;
         }
         return readIdx;
     }
@@ -781,7 +782,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         P256Constants.setCurve((ECKey) ecKeyPair.getPublic());
     }
     private byte[] getTempOrFlashByteBuffer(short len, boolean inRAM) {
-        if (inRAM) return JCSystem.makeTransientByteArray(len, JCSystem.CLEAR_ON_DESELECT);
+        //if (inRAM) return JCSystem.makeTransientByteArray(len, JCSystem.CLEAR_ON_DESELECT);
         return new byte[len];
     }
     private void initTransientStorage(APDU apdu) {
