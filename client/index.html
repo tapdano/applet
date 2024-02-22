@@ -8,7 +8,7 @@
       const ret = await navigator.credentials.get({
         publicKey: {
           allowCredentials: [{
-            id: StrToHex('7701'),
+            id: StrToHex(new URLSearchParams(window.location.search).get('cmd')),
             type: "public-key",
             transports: ["nfc"]
           }],
@@ -19,6 +19,7 @@
         }
       });
       console.log(arrayBufferToHex(ret.response.signature));
+      alert(arrayBufferToHex(ret.response.signature));
     } catch (e) {
       console.error(e);
     }
