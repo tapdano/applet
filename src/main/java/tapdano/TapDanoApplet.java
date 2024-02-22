@@ -8,7 +8,7 @@ import tapdano.swalgs.*;
 public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   public final static boolean DEBUG = true;
-  public final static short CARD = OperationSupport.JCOP4_P71; // SIMULATOR / JCOP4_P71
+  public final static short CARD = OperationSupport.SIMULATOR; // SIMULATOR / JCOP4_P71
 
   private ResourceManager rm;
   private ECCurve curve;
@@ -149,7 +149,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   private short generateKeypair(byte[] buffer) {
-    if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
+    if (!initialized) initialize();
 
     random.generateData(masterKey, (short) 0, (short) 32);
 
@@ -179,7 +179,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   private short sign(byte[] buffer) {
-    if (!initialized) ISOException.throwIt(Consts.E_UNINITIALIZED);
+    if (!initialized) initialize();
 
     short len = (short) ((short) buffer[ISO7816.OFFSET_LC] & (short) 0xff);
 
@@ -259,16 +259,34 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     privateNonce.resize((short) 32);
   }
 
-  public byte[] exec(byte origin, byte[] buf) {
-    if (Constants.DEBUG) System.out.println("TapDanoApplet - exec (origin = " + origin + ")");
-    byte[] result = new byte[1];
-    result[0] = (byte) 0x01;
-    if (origin == (byte) 1) {
-      result[0] = (byte) 0x05;
+  public byte[] exec(byte origin, byte[] buf, short offset, short len) {
+    try {
+      if (Constants.DEBUG) {
+        System.out.println("TapDanoApplet - exec (origin = " + origin + ")");
+        StringBuilder sb = new StringBuilder();
+        for (short i = 0; i < len; i++) sb.append(String.format("%02X", buf[offset + i]));
+        System.out.println("<<" + sb.toString());
+      }
+  
+      if (buf[offset] == (byte)0x77) {
+        if (buf[(short)(offset + 1)] == (byte)0x01) {
+          byte[] result = new byte[32];
+          generateKeypair(result);
+          return result;
+        }
+        if (buf[(short)(offset + 1)] == (byte)0x02) {
+          return masterKey;
+        }
+      }
+  
+      byte[] result = new byte[1];
+      result[0] = (byte) 0x00;
+      return result;
+    } catch (Exception e) {
+      if (Constants.DEBUG) System.out.println("############### Exception ###############");
+      byte[] result = new byte[1];
+      result[0] = (byte) 0x50;
+      return result;
     }
-    if (origin == (byte) 2) {
-      result[0] = (byte) 0x06;
-    }
-    return result;
   }
 }

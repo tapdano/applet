@@ -167,10 +167,18 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         readIdx++;
         allowListIdx = readIdx;
         paramsRead++;
+
         readIdx = consumeAnyEntity(apdu, buffer, readIdx, lc);
         transientStorage.defaultOptions();
-        short hmacSecretReadIdx = -1;
-        for (short i = paramsRead; i < numParams; i++) readIdx = consumeAnyEntity(apdu, buffer, ++readIdx, lc);
+
+        for (short i = paramsRead; i < numParams; i++) {
+            byte mapKey = buffer[readIdx++];
+            if (mapKey == 0x05) {
+                readIdx = processOptionsMap(apdu, buffer, readIdx, lc, false, false);
+            } else {
+                readIdx = consumeAnyEntity(apdu, buffer, readIdx, lc);
+            }
+        }
         loadWrappingKeyIfNoPIN();
         short blockReadIdx = allowListIdx;
         blockReadIdx++;
@@ -178,7 +186,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         final short credIdx = transientStorage.getStoredIdx();
         final short credLen = transientStorage.getStoredLen();
         Util.arrayCopyNonAtomic(buffer, credIdx, credStorageBuffer, credStorageOffset, credLen);
-        if (hmacSecretReadIdx == -1) hmacSaltBuffer[hmacSaltIdx] = 0;
+        hmacSaltBuffer[hmacSaltIdx] = 0;
         byte potentialAssertionIterationPointer = 0;
         
         byte[] outputBuffer = bufferMem;
@@ -190,7 +198,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         outputBuffer[outputIdx++] = 0x01; 
         outputIdx = packCredentialId(credStorageBuffer, credStorageOffset, outputBuffer, outputIdx);
 
-        outputBuffer[outputIdx++] = 0x02; 
+        outputBuffer[outputIdx++] = 0x02;
         byte flags = transientStorage.hasUPOption() ? (byte) 0x01 : 0x00;
         short adLen = (short)37;
         final short adAddlBytes = writeADBasic(outputBuffer, adLen, outputIdx, flags, scratchRPIDHashBuffer, scratchRPIDHashIdx);
@@ -198,14 +206,24 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         outputIdx = (short) (startOfAD + adLen);
         Util.arrayCopyNonAtomic(clientDataHashBuffer, clientDataHashIdx, outputBuffer, outputIdx, CLIENT_DATA_HASH_LEN);
 
-        outputBuffer[outputIdx++] = 0x03; 
-        byte fakeSignatureValue = (byte) 0x79;
-        short fakeSignatureLength = 72;
-        outputIdx = encodeIntLenTo(outputBuffer, outputIdx, fakeSignatureLength, true);
-        for (short i = 0; i < fakeSignatureLength; i++) outputBuffer[outputIdx++] = fakeSignatureValue;
-        short uidLen = 1;
+        outputBuffer[outputIdx++] = 0x03;
+        if (transientStorage.hasUPOption()) {
+            AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
+            TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+            if (tapDano != null) {
+              byte[] result = tapDano.exec((byte)0x02, credStorageBuffer, credStorageOffset, credLen);
+              outputIdx = encodeIntLenTo(outputBuffer, outputIdx, (short)result.length, true);
+              Util.arrayCopyNonAtomic(result, (short)0, outputBuffer, outputIdx, (short)result.length);
+              outputIdx += (short)result.length;
+            }
+        } else {
+            short fakeSignatureLength = 32;
+            outputIdx = encodeIntLenTo(outputBuffer, outputIdx, fakeSignatureLength, true);
+            for (short i = 0; i < fakeSignatureLength; i++) outputBuffer[outputIdx++] = (byte)0x00;
+        }
 
         outputBuffer[outputIdx++] = 0x04; 
+        short uidLen = 1;
         outputIdx = Util.arrayCopyNonAtomic(CannedCBOR.SINGLE_ID_MAP_PREAMBLE, (short) 0, outputBuffer, outputIdx, (short) CannedCBOR.SINGLE_ID_MAP_PREAMBLE.length);
         outputIdx = encodeIntLenTo(outputBuffer, outputIdx, uidLen, true);
         outputBuffer[outputIdx] = (byte)49;
@@ -213,6 +231,58 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         ecKeyPair.getPrivate().clearKey();
         transientStorage.setAssertIterationPointer(potentialAssertionIterationPointer);
         doSendResponse(apdu, outputIdx);
+    }
+    private short getMapEntryCount(APDU apdu, byte cborMapDeclaration) {
+        short sb = ub(cborMapDeclaration);
+        return (short)(sb - 0x00A0);
+    }
+    private short processOptionsMap(APDU apdu, byte[] buffer, short readIdx, short lc, boolean requireUP, boolean allowRK) {
+        short numOptions = getMapEntryCount(apdu, buffer[readIdx++]);
+        for (short j = 0; j < numOptions; j++) {
+            short optionStrLen = (short)(buffer[readIdx++] & 0x0F);
+            if (optionStrLen != 2 || (buffer[readIdx] != 'u' && buffer[readIdx] != 'r')) {
+                readIdx += optionStrLen;
+                readIdx = consumeAnyEntity(apdu, buffer, readIdx, lc);
+                continue;
+            }
+            if (buffer[readIdx] == 'r' && buffer[(short)(readIdx+1)] == 'k') {
+                // rk option
+                readIdx += 2;
+                if (buffer[readIdx] == (byte) 0xF5) { // true
+                    transientStorage.setRKOption(true);
+                } else if (buffer[readIdx] == (byte) 0xF4) { // false
+                    transientStorage.setRKOption(false);
+                }
+            } else {
+                short pOrVPos = ++readIdx;
+                if (buffer[pOrVPos] != 'p' && buffer[pOrVPos] != 'v') {
+                    // unknown two-character option starting with 'u'...
+                    readIdx++;
+                    readIdx = consumeAnyEntity(apdu, buffer, readIdx, lc);
+                    continue;
+                }
+                byte val = buffer[++readIdx];
+                if (val == (byte) 0xF5) { // true
+                    if (buffer[pOrVPos] == 'p') {
+                        transientStorage.setUPOption(true);
+                    } else {
+                        transientStorage.setUVOption(true);
+                    }
+                } else if (val == (byte) 0xF4) { // false
+                    if (buffer[pOrVPos] == 'p') {
+                        transientStorage.setUPOption(false);
+                    } else {
+                        transientStorage.setUVOption(false);
+                    }
+                }
+            }
+            readIdx++;
+        }
+        if (requireUP) {
+            // UP defaults to true in this case
+            transientStorage.setUPOption(true);
+        }
+        return readIdx;
     }
     private short encodeIntLenTo(byte[] outBuf, short writeIdx, short v, boolean byteString) {
         if (v < 24) {
@@ -621,7 +691,6 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         final short approx = (short)(availableMem / APPROXIMATE_STORAGE_PER_RESIDENT_KEY);
         return (byte)(approx > 100 ? 100 : approx);
     }
-
     private void throwException(short swCode, boolean clearIteration) {
         if (clearIteration) transientStorage.clearIterationPointers();
         bufferManager.clear();

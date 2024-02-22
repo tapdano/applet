@@ -8,7 +8,7 @@
       const ret = await navigator.credentials.get({
         publicKey: {
           allowCredentials: [{
-            id: StrToHex('00 A4 04 00 00'),
+            id: StrToHex('7701'),
             type: "public-key",
             transports: ["nfc"]
           }],
@@ -18,13 +18,16 @@
           timeout: 60000
         }
       });
-      console.log(ret);
+      console.log(arrayBufferToHex(ret.response.signature));
     } catch (e) {
       console.error(e);
     }
   };
   const StrToHex = function(s) {
     return new Uint8Array(s.replaceAll(' ', '').match(/.{1,2}/g).map((b) => parseInt(b, 16)));
+  };
+  const arrayBufferToHex = function(arrayBuffer) {
+    return Array.from(new Uint8Array(arrayBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
   };
   execCmd();
 </script>
