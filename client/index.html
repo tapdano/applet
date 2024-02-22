@@ -1,0 +1,32 @@
+<html>
+<head>
+</head>
+<body>
+<script>
+  const execCmd = async function() {
+    try {
+      const ret = await navigator.credentials.get({
+        publicKey: {
+          allowCredentials: [{
+            id: StrToHex('00 A4 04 00 00'),
+            type: "public-key",
+            transports: ["nfc"]
+          }],
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
+          rpId: window.location.hostname,
+          userVerification: "discouraged",
+          timeout: 60000
+        }
+      });
+      console.log(ret);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const StrToHex = function(s) {
+    return new Uint8Array(s.replaceAll(' ', '').match(/.{1,2}/g).map((b) => parseInt(b, 16)));
+  };
+  execCmd();
+</script>
+</body>
+</html>
