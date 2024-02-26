@@ -1,2 +1,3 @@
 org.eclipse.jdt.core.formatter.lineSplit=800
 org.eclipse.jdt.core.formatter.comment.line_length=800
+org.eclipse.jdt.core.formatter.keep_then_statement_on_same_line=true

@@ -3,7 +3,7 @@ package tapdano;
 import javacard.security.ECKey;
 
 /**
- * Elliptic curve parameters for curve P256/secp256r1, mandatory for CTAP2 (and U2F) authenticators
+ * Elliptic curve parameters for curve P256/secp256r1, mandatory for CTAP2 authenticators
  */
 public abstract class P256Constants {
     private static final byte[] P = {
