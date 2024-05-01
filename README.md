@@ -11,7 +11,7 @@ It leverages the **CTAP** (Client To Authenticator Protocol) from the **FIDO All
 - Secure storage for private keys.
 
 ## Environment Setup and Building the application
-1. **Download JavacardKit**: Obtain a copy of [JavacardKit version 3.0.4](https://www.oracle.com/java/technologies/javacard-sdk-downloads.html) (or jckit_303 if you prefer).
+1. **Download JavacardKit**: Obtain a copy of [JavacardKit version 3.2](https://www.oracle.com/java/technologies/javacard-sdk-downloads.html) (or jckit_303 if you prefer).
 2. **Set Environment Variable**: Configure the `JC_HOME` environment variable to point to your JavacardKit directory.
    ```bash
    export JC_HOME=<path_to_your_jckit_directory>
