@@ -37,7 +37,11 @@ async function startGradleProcess() {
 }
 
 // Inicializa o monitoramento do arquivo específico
-const watcher = chokidar.watch('src/main/java/tapdano/FIDO2Applet.java', {
+const watcher = chokidar.watch([
+  'src/main/java/tapdano/FIDO2Applet.java',
+  'src/main/java/tapdano/Constants.java',
+  'src/main/java/tapdano/TapDanoApplet.java'
+], {
   ignored: /(^|[\/\\])\../, // ignora arquivos ponto
   persistent: true
 });
