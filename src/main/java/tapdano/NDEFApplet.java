@@ -282,10 +282,8 @@ public final class NDEFApplet extends Applet {
         AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
         TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
         if (tapDano != null) {
-          byte[] result = tapDano.exec((byte)0x01, buffer, (short)0, (short)0);
-          apdu.setOutgoing();
-          apdu.setOutgoingLength((short)result.length);
-          apdu.sendBytesLong(result, (short)0, (short)result.length);
+          short outgoingLength = tapDano.exec((byte)0x01, buffer, (byte)0);
+          apdu.setOutgoingAndSend((short)0, outgoingLength);
         }
       } else if (ins == INS_READ_BINARY) {
         processReadBinary(apdu);

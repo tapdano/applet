@@ -3,5 +3,5 @@ package tapdano;
 import javacard.framework.*;
 
 public interface TapDanoShareable extends Shareable {
-  byte[] exec(byte origin, byte[] buf, short offset, short len);
+  short exec(byte origin, byte[] buffer, byte offset);
 }

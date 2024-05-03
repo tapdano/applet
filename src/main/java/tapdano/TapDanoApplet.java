@@ -6,7 +6,6 @@ import javacardx.crypto.Cipher;
 
 public class TapDanoApplet extends Applet implements TapDanoShareable {
 
-  public final static boolean DEBUG = true;
   boolean INITIALIZED = false;
   boolean PAIR_GENERATED = false;
   boolean SIGN_INITIALIZED = false;
@@ -45,53 +44,63 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   public void process(APDU apdu) {
     if (!INITIALIZED) initialize();
     if (selectingApplet()) return;
-
     byte[] buffer = apdu.getBuffer();
-
-    if (buffer[ISO7816.OFFSET_CLA] != (byte)0x00) ISOException.throwIt(ISO7816.SW_CLA_NOT_SUPPORTED);
-
     try {
-      switch (buffer[ISO7816.OFFSET_INS]) {
-        case (byte)0xC0:
-          try {
-            generateKeypair(buffer);
-            apdu.setOutgoingAndSend((short)0, (short)64);
-          } catch (Exception e) {
-            if (Constants.DEBUG) System.out.println("C0 - catch");
-            buffer[0] = (byte)0x89;
-            apdu.setOutgoingAndSend((short)0, (short) 1);
-          }
-          break;
-          case (byte)0xC1:
-          try {
-            byte[] msg = new byte[1];
-            msg[0] = (byte)0x65;
-            byte[] result = signData(msg, (short)0, (short)msg.length);
-            Util.arrayCopyNonAtomic(result, (short)0, buffer, (short)0, (short)result.length);
-            apdu.setOutgoingAndSend((short) 0, (short)result.length);
-          } catch (Exception e) {
-            if (Constants.DEBUG) System.out.println("C1 - catch");
-            buffer[0] = (byte)0x89;
-            apdu.setOutgoingAndSend((short)0, (short) 1);
-          }
-          break;
-        case (byte)0xC2:
-          try {
-            byte[] result = getLastSign();
-            Util.arrayCopyNonAtomic(result, (short)0, buffer, (short)0, (short)result.length);
-            apdu.setOutgoingAndSend((short) 0, (short)result.length);
-          } catch (Exception e) {
-            if (Constants.DEBUG) System.out.println("C2 - catch");
-            buffer[0] = (byte)0x89;
-            apdu.setOutgoingAndSend((short)0, (short) 1);
-          }
-          break;
-        default:
-          ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);
-      }
+      short outputLength = processTapDano(buffer, (byte)0, (byte)0);
+      apdu.setOutgoingAndSend((short)0, outputLength);
     } catch (Exception e) {
-      ISOException.throwIt((short)0xff01);
+      ISOException.throwIt((short)0xFF01);
     }
+  }
+
+  public short exec(byte origin, byte[] buffer, byte offsetIn) {
+    byte offsetOut = (origin == (byte)0x02) ? (byte)5 : (byte)0;
+    short outputLength = (short)0;
+    try {
+      if (!INITIALIZED) initialize();
+      outputLength = processTapDano(buffer, offsetIn, offsetOut);
+    } catch (Exception e) {
+      if (Constants.DEBUG) System.out.println("############### Exception ###############");
+      outputLength = (short)1;
+      buffer[offsetOut] = (byte)0x50;
+    }
+    if (origin == (byte)0x02) {
+      outputLength += (byte)5;
+      buffer[0] = (byte)0x01;
+      buffer[1] = (byte)0x00;
+      buffer[2] = (byte)0x00;
+      buffer[3] = (byte)0x00;
+      buffer[4] = (byte)0x01;
+    }
+    return outputLength;
+  }
+
+  public short processTapDano(byte[] buffer, byte offsetIn, byte offsetOut) {
+
+    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA0) {
+      buffer[offsetOut++] = (byte)0xAB;
+      buffer[offsetOut++] = (byte)0xCD;
+      return (short)2;
+    }
+
+    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA1) {
+      return generateKeypair(buffer, offsetIn, offsetOut);
+    }
+
+    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA2) {
+      return signData(buffer, offsetIn, offsetOut);
+    }
+
+    /*
+    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA3) {
+      byte[] result = getLastSign();
+      return result;
+    }
+    */
+
+    buffer[offsetOut++] = (byte)0x6D;
+    buffer[offsetOut++] = (byte)0x00;
+    return (short)2;
   }
 
   private void initialize() {
@@ -112,8 +121,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     INITIALIZED = true;
   }
 
-  private void generateKeypair(byte[] buffer) {
-    if (!INITIALIZED) initialize();
+  private short generateKeypair(byte[] buffer, byte offsetIn, byte offsetOut) {
     if (!PAIR_GENERATED) {
       keypair.genKeyPair();
 
@@ -126,58 +134,24 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       //PAIR_GENERATED = true;
     }
 
-    Util.arrayCopyNonAtomic(priKeyEncoded, (short)0, buffer, (short)0, (short)32);
-    Util.arrayCopyNonAtomic(pubKeyEncoded, (short)0, buffer, (short)32, (short)32);
+    Util.arrayCopyNonAtomic(priKeyEncoded, (short)0, buffer, (short)offsetOut, (short)priKeyEncoded.length);
+    Util.arrayCopyNonAtomic(pubKeyEncoded, (short)0, buffer, (short)(offsetOut + priKeyEncoded.length), (short)pubKeyEncoded.length);
+
+    return (short)(priKeyEncoded.length + pubKeyEncoded.length);
   }
 
-  public byte[] signData(byte[] data, short offset, short length) throws CryptoException {
+  public short signData(byte[] buffer, byte offsetIn, byte offsetOut) throws CryptoException {
     if (!SIGN_INITIALIZED) {
       signature.init((Key)prikey, Signature.MODE_SIGN);
       SIGN_INITIALIZED = true;
     }
-    signature.sign(data, offset, length, signatureBuffer, (short)0);
-    return signatureBuffer;
+    short msgLen = (short)buffer[(byte)(offsetIn + ISO7816.OFFSET_LC)];
+    signature.sign(buffer, (short)(offsetIn + ISO7816.OFFSET_CDATA), msgLen, signatureBuffer, (short)0);
+    Util.arrayCopyNonAtomic(signatureBuffer, (short)0, buffer, (short)offsetOut, (short)signatureBuffer.length);
+    return (short)signatureBuffer.length;
   }
 
   public byte[] getLastSign() {
     return signatureBuffer;
-  }
-
-  public byte[] exec(byte origin, byte[] buf, short offset, short len) {
-    try {
-      if (Constants.DEBUG) {
-        System.out.println("TapDanoApplet - exec (origin = " + origin + ")");
-        StringBuilder sb = new StringBuilder();
-        for (short i = 0; i < len; i++) sb.append(String.format("%02X", buf[offset + i]));
-        System.out.println("<<" + sb.toString());
-      }
-  
-      if (buf[offset] == (byte)0x77) {
-        if (buf[(short)(offset + 1)] == (byte)0x01) {
-          byte[] result = new byte[64];
-          generateKeypair(result);
-          return result;
-        }
-        if (buf[(short)(offset + 1)] == (byte)0x02) {
-          byte[] msg = new byte[1];
-          msg[0] = (byte)0x65;
-          byte[] result = signData(msg, (short)0, (short)msg.length);
-          return result;
-        }
-        if (buf[(short)(offset + 1)] == (byte)0x03) {
-          byte[] result = getLastSign();
-          return result;
-        }
-      }
-  
-      byte[] result = new byte[1];
-      result[0] = (byte) 0x00;
-      return result;
-    } catch (Exception e) {
-      if (Constants.DEBUG) System.out.println("############### Exception ###############");
-      byte[] result = new byte[1];
-      result[0] = (byte) 0x50;
-      return result;
-    }
   }
 }
