@@ -11,13 +11,15 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   boolean SIGN_INITIALIZED = false;
   byte[] priKeyEncoded = new byte[32];
   byte[] pubKeyEncoded = new byte[32];
+  byte[] lastBuffer = new byte[256];
+  byte[] lastResponse = new byte[256];
+  short lastResponseLen;
 
   NamedParameterSpec params;
   XECKey prikey;
   XECKey pubkey;
   KeyPair keypair;
   Signature signature;
-  byte[] signatureBuffer = new byte[64];
 
   protected TapDanoApplet(byte[] buf, short offAID, byte lenAID) {
     if (Constants.DEBUG) System.out.println("TapDanoApplet constructor");
@@ -76,31 +78,50 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   public short processTapDano(byte[] buffer, byte offsetIn, byte offsetOut) {
+    short dataLen = (short)buffer[(byte)(offsetIn + ISO7816.OFFSET_LC)];
+    byte offsetOutOriginal = offsetOut;
+
+    boolean isCacheActive = (buffer[(byte)(offsetIn + ISO7816.OFFSET_P1)] == (byte)0x01);
+    byte[] lastBufferTemp = new byte[256];
+
+    if (isCacheActive) {
+      if (Util.arrayCompare(buffer, (short)offsetIn, lastBuffer, (short)0, (short)(256 - offsetIn)) == (byte)0) {
+        Util.arrayCopy(lastResponse, (short)0, buffer, (short)offsetOut, (short)(256 - offsetOut));
+        return lastResponseLen;
+      }
+      dataLen = (short)(dataLen - 8);
+      Util.arrayCopy(buffer, (short)offsetIn, lastBufferTemp, (short)0, (short)(256 - offsetIn));
+    }
+
+    short responseLen = (short)0;
 
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA0) {
-      buffer[offsetOut++] = (byte)0xAB;
-      buffer[offsetOut++] = (byte)0xCD;
-      return (short)2;
+      buffer[offsetOut++] = (byte)0x01;
+      buffer[offsetOut++] = (byte)0x00;
+      responseLen = (short)2;
     }
 
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA1) {
-      return generateKeypair(buffer, offsetIn, offsetOut);
+      responseLen = generateKeypair(buffer, offsetIn, offsetOut);
     }
 
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA2) {
-      return signData(buffer, offsetIn, offsetOut);
+      responseLen = signData(buffer, offsetIn, offsetOut, dataLen);
     }
 
-    /*
-    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA3) {
-      byte[] result = getLastSign();
-      return result;
+    if (responseLen == (short)0) {
+      buffer[offsetOut++] = (byte)0x6D;
+      buffer[offsetOut++] = (byte)0x00;
+      responseLen = (short)2;
     }
-    */
 
-    buffer[offsetOut++] = (byte)0x6D;
-    buffer[offsetOut++] = (byte)0x00;
-    return (short)2;
+    if (isCacheActive) {
+      lastResponseLen = responseLen;
+      Util.arrayCopy(lastBufferTemp, (short)0, lastBuffer, (short)0, (short)lastBuffer.length);
+      Util.arrayCopy(buffer, (short)offsetOutOriginal, lastResponse, (short)0, (short)(256 - offsetOutOriginal));
+    }
+
+    return responseLen;
   }
 
   private void initialize() {
@@ -140,18 +161,12 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     return (short)(priKeyEncoded.length + pubKeyEncoded.length);
   }
 
-  public short signData(byte[] buffer, byte offsetIn, byte offsetOut) throws CryptoException {
+  public short signData(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) throws CryptoException {
     if (!SIGN_INITIALIZED) {
       signature.init((Key)prikey, Signature.MODE_SIGN);
       SIGN_INITIALIZED = true;
     }
-    short msgLen = (short)buffer[(byte)(offsetIn + ISO7816.OFFSET_LC)];
-    signature.sign(buffer, (short)(offsetIn + ISO7816.OFFSET_CDATA), msgLen, signatureBuffer, (short)0);
-    Util.arrayCopyNonAtomic(signatureBuffer, (short)0, buffer, (short)offsetOut, (short)signatureBuffer.length);
-    return (short)signatureBuffer.length;
-  }
-
-  public byte[] getLastSign() {
-    return signatureBuffer;
+    signature.sign(buffer, (short)(offsetIn + ISO7816.OFFSET_CDATA), dataLen, buffer, (short)offsetOut);
+    return (short)64;
   }
 }
