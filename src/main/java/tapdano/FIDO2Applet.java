@@ -40,7 +40,7 @@ public class FIDO2Applet extends Applet {
       if (tapDano != null) {
         short outputLength = tapDano.exec((byte)0x02, buffer, (byte)(ISO7816.OFFSET_CDATA + 65));
         apdu.setOutgoingAndSend((short)0, outputLength);
-        return;        
+        return;
       }
     }
 
