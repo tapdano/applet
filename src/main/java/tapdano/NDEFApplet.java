@@ -275,16 +275,6 @@ public final class NDEFApplet extends Applet {
     if (apdu.isISOInterindustryCLA()) {
       if (ins == INS_SELECT) {
         processSelect(apdu);
-      } else if (ins == (byte)0x78) {
-        if (Constants.DEBUG) System.out.println("### 0x78");
-      } else if (ins == (byte)0x88) {
-        if (Constants.DEBUG) System.out.println("### 0x88");
-        AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
-        TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
-        if (tapDano != null) {
-          short outgoingLength = tapDano.exec((byte)0x01, buffer, (byte)0);
-          apdu.setOutgoingAndSend((short)0, outgoingLength);
-        }
       } else if (ins == INS_READ_BINARY) {
         processReadBinary(apdu);
       } else if (ins == INS_UPDATE_BINARY) {
@@ -357,8 +347,28 @@ public final class NDEFApplet extends Applet {
   private void processReadBinary(APDU apdu) throws ISOException {
     byte[] buffer = apdu.getBuffer();
 
-    // access the file
-    byte[] file = accessFileForRead(vars[VAR_SELECTED_FILE]);
+    byte[] file;
+    short outputLength;
+
+    boolean useTapDano = (vars[VAR_SELECTED_FILE] == FILEID_NDEF_DATA);
+    if (useTapDano) {
+      AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
+      TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+      if (tapDano == null) {
+        ISOException.throwIt(ISO7816.SW_UNKNOWN);
+      }
+      file = new byte[buffer.length];
+      Util.arrayCopyNonAtomic(buffer, (short)0, file, (short)0, (short)buffer.length);
+      outputLength = tapDano.exec((byte)0x03, file, ISO7816.OFFSET_CDATA);
+      if (outputLength == 0) {
+        file = accessFileForRead(vars[VAR_SELECTED_FILE]);
+        outputLength = (short)file.length;
+      }
+    } else {
+      // access the file
+      file = accessFileForRead(vars[VAR_SELECTED_FILE]);
+      outputLength = (short)file.length;
+    }
 
     // get and check the read offset
     short offset = Util.getShort(buffer, ISO7816.OFFSET_P1);
@@ -377,8 +387,8 @@ public final class NDEFApplet extends Applet {
     if (limit < 0) {
       ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
     }
-    if (limit >= file.length) {
-      le = (short) (file.length - offset);
+    if (limit >= outputLength) {
+      le = (short) (outputLength - offset);
     }
 
     // send the requested data
@@ -412,6 +422,19 @@ public final class NDEFApplet extends Applet {
   private void processUpdateBinary(APDU apdu) throws ISOException {
     byte[] buffer = apdu.getBuffer();
 
+    boolean useTapDano = (vars[VAR_SELECTED_FILE] == FILEID_NDEF_DATA) && (buffer[ISO7816.OFFSET_CDATA] == (byte)0xD5);
+    if (useTapDano) {
+      AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
+      TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+      if (tapDano == null) {
+        ISOException.throwIt(ISO7816.SW_UNKNOWN);
+      }
+      byte[] bufferClone = new byte[buffer.length];
+      Util.arrayCopyNonAtomic(buffer, (short)0, bufferClone, (short)0, (short)buffer.length);
+      tapDano.exec((byte)0x01, bufferClone, (byte)(ISO7816.OFFSET_CDATA + 3));
+      return;
+    }
+    
     // access the file
     byte[] file = accessFileForWrite(vars[VAR_SELECTED_FILE]);
 

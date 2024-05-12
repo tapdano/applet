@@ -13,6 +13,8 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   byte[] pubKeyEncoded = new byte[32];
   byte[] lastBuffer = new byte[256];
   byte[] lastResponse = new byte[256];
+  byte[] NDEF_LastResponse = new byte[256];
+  short NDEF_LastLength;
   short lastResponseLen;
 
   NamedParameterSpec params;
@@ -56,8 +58,18 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   public short exec(byte origin, byte[] buffer, byte offsetIn) {
-    byte offsetOut = (origin == (byte)0x02) ? (byte)5 : (byte)0;
+    boolean isNDEF_Read = (origin == (byte)0x03);
+    boolean isNDEF_Write = (origin == (byte)0x01);
+    boolean isFIDO = (origin == (byte)0x02);
+
+    byte offsetOut = (byte)5;
     short outputLength = (short)0;
+
+    if (isNDEF_Read) {
+      Util.arrayCopy(NDEF_LastResponse, (short)0, buffer, (short)0, NDEF_LastLength);
+      return NDEF_LastLength;
+    }
+
     try {
       if (!INITIALIZED) initialize();
       outputLength = processTapDano(buffer, offsetIn, offsetOut);
@@ -66,7 +78,19 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       outputLength = (short)1;
       buffer[offsetOut] = (byte)0x50;
     }
-    if (origin == (byte)0x02) {
+
+    if (isNDEF_Write) {
+      buffer[0] = (byte)0x00;
+      buffer[1] = (byte)(outputLength + 3);
+      buffer[2] = (byte)0xD5;
+      buffer[3] = (byte)0x00;
+      buffer[4] = (byte)outputLength;
+      outputLength += (short)5;
+      Util.arrayCopy(buffer, (short)0, NDEF_LastResponse, (short)0, outputLength);
+      NDEF_LastLength = outputLength;
+    }
+
+    if (isFIDO) {
       outputLength += (byte)5;
       buffer[0] = (byte)0x01;
       buffer[1] = (byte)0x00;
@@ -74,6 +98,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       buffer[3] = (byte)0x00;
       buffer[4] = (byte)0x01;
     }
+
     return outputLength;
   }
 
@@ -95,20 +120,24 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
     short responseLen = (short)0;
 
+    // Get Version
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA0) {
       buffer[offsetOut++] = (byte)0x01;
       buffer[offsetOut++] = (byte)0x00;
       responseLen = (short)2;
     }
 
+    // Generate KeyPair
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA1) {
       responseLen = generateKeypair(buffer, offsetIn, offsetOut);
     }
 
+    // Sign Data
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA2) {
       responseLen = signData(buffer, offsetIn, offsetOut, dataLen);
     }
 
+    //INS not found
     if (responseLen == (short)0) {
       buffer[offsetOut++] = (byte)0x6D;
       buffer[offsetOut++] = (byte)0x00;
