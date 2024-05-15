@@ -9,8 +9,12 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   boolean INITIALIZED = false;
   boolean PAIR_GENERATED = false;
   boolean SIGN_INITIALIZED = false;
+  
   byte[] priKeyEncoded = new byte[32];
   byte[] pubKeyEncoded = new byte[32];
+  byte TAG_TYPE;
+  boolean TAG_EXTRACT_LOCKED;
+
   byte[] lastBuffer = new byte[256];
   byte[] lastResponse = new byte[256];
   byte[] NDEF_LastResponse = new byte[256];
@@ -120,21 +124,29 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
     short responseLen = (short)0;
 
-    // Get Version
+    // Get Info
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA0) {
-      buffer[offsetOut++] = (byte)0x01;
-      buffer[offsetOut++] = (byte)0x00;
-      responseLen = (short)2;
+      responseLen = getTagInfo(buffer, offsetIn, offsetOut, dataLen);
     }
 
-    // Generate KeyPair
+    // Burn Tag
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA1) {
-      responseLen = generateKeypair(buffer, offsetIn, offsetOut);
+      responseLen = burnTag(buffer, offsetIn, offsetOut, dataLen);
     }
 
     // Sign Data
     if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA2) {
       responseLen = signData(buffer, offsetIn, offsetOut, dataLen);
+    }
+
+    // Format Tag
+    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA3) {
+      responseLen = formatTag(buffer, offsetIn, offsetOut, dataLen);
+    }
+
+    // Lock Tag
+    if (buffer[(byte)(offsetIn + ISO7816.OFFSET_INS)] == (byte)0xA4) {
+      responseLen = lockTag(buffer, offsetIn, offsetOut, dataLen);
     }
 
     //INS not found
@@ -169,25 +181,72 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     signature = Signature.getInstance(MessageDigest.ALG_NULL, Signature.SIG_CIPHER_EDDSA, Cipher.PAD_NULL, false);
 
     INITIALIZED = true;
+    SIGN_INITIALIZED = false;
+    PAIR_GENERATED = false;
+    priKeyEncoded = new byte[32];
+    pubKeyEncoded = new byte[32];
   }
 
-  private short generateKeypair(byte[] buffer, byte offsetIn, byte offsetOut) {
-    if (!PAIR_GENERATED) {
-      keypair.genKeyPair();
+  private short getTagInfo(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+    short responseLen = (short)0;
+    buffer[offsetOut++] = (byte)0x54; // T[ap]
+    buffer[offsetOut++] = (byte)0x44; // D[ano]
+    buffer[offsetOut++] = (byte)0x01; // Version
+    buffer[offsetOut++] = (byte)0x00; // Version
+    buffer[offsetOut++] = PAIR_GENERATED ? (byte)0x01 : (byte)0x00;
+    responseLen = (short)0x00005;
+    if (PAIR_GENERATED) {
+      boolean showPk = (TAG_TYPE == (byte)0x02) && (!TAG_EXTRACT_LOCKED);
+      buffer[offsetOut++] = TAG_TYPE;
+      buffer[offsetOut++] = TAG_EXTRACT_LOCKED ? (byte)0x01 : (byte)0x00;
+      Util.arrayCopyNonAtomic(pubKeyEncoded, (short)0, buffer, (short)offsetOut, (short)pubKeyEncoded.length);
+      offsetOut += (short)pubKeyEncoded.length;
+      responseLen += (short)pubKeyEncoded.length + 2;
+      if (showPk) {
+        Util.arrayCopyNonAtomic(priKeyEncoded, (short)0, buffer, (short)offsetOut, (short)priKeyEncoded.length);
+        offsetOut += (short)priKeyEncoded.length;
+        responseLen += (short)priKeyEncoded.length;
+      }
+    }
+    return responseLen;
+  }
 
-      prikey = (XECKey)keypair.getPrivate();
-      pubkey = (XECKey)keypair.getPublic();
+  private short burnTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+    byte action = buffer[(short)(offsetIn + ISO7816.OFFSET_CDATA)];
+    byte type = buffer[(short)(offsetIn + ISO7816.OFFSET_CDATA + 1)];
+    byte[] importPrivateKey = new byte[32];
 
-      prikey.getEncoded(priKeyEncoded, (short)0);
-      pubkey.getEncoded(pubKeyEncoded, (short)0);
-
-      //PAIR_GENERATED = true;
+    if (PAIR_GENERATED) {
+      return getTagInfo(buffer, offsetIn, offsetOut, dataLen);
+    }
+    
+    if (action == (byte)0x02) { //restore
+      if (type == (byte)0x01) { //soulbound
+        buffer[offsetOut++] = (byte)0xEE;
+        buffer[offsetOut++] = (byte)0x02;
+        return (short)2;
+      }
+      Util.arrayCopyNonAtomic(buffer, (short)(offsetIn + ISO7816.OFFSET_CDATA + 2), importPrivateKey, (short)0, (short)importPrivateKey.length);
     }
 
-    Util.arrayCopyNonAtomic(priKeyEncoded, (short)0, buffer, (short)offsetOut, (short)priKeyEncoded.length);
-    Util.arrayCopyNonAtomic(pubKeyEncoded, (short)0, buffer, (short)(offsetOut + priKeyEncoded.length), (short)pubKeyEncoded.length);
+    TAG_TYPE = type;
+    TAG_EXTRACT_LOCKED = (type == (byte)0x01);
 
-    return (short)(priKeyEncoded.length + pubKeyEncoded.length);
+    if (action == (byte)0x01) { //new
+      keypair.genKeyPair();
+      prikey = (XECKey)keypair.getPrivate();
+      pubkey = (XECKey)keypair.getPublic();
+      prikey.getEncoded(priKeyEncoded, (short)0);
+      pubkey.getEncoded(pubKeyEncoded, (short)0);
+    }
+
+    if (action == (byte)0x02) { //restore
+      // TO DO
+    }
+
+    PAIR_GENERATED = true;
+
+    return getTagInfo(buffer, offsetIn, offsetOut, dataLen);
   }
 
   public short signData(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) throws CryptoException {
@@ -197,5 +256,15 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     }
     signature.sign(buffer, (short)(offsetIn + ISO7816.OFFSET_CDATA), dataLen, buffer, (short)offsetOut);
     return (short)64;
+  }
+
+  private short formatTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+    initialize();
+    return getTagInfo(buffer, offsetIn, offsetOut, dataLen);
+  }
+
+  private short lockTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+    TAG_EXTRACT_LOCKED = true;
+    return getTagInfo(buffer, offsetIn, offsetOut, dataLen);
   }
 }
