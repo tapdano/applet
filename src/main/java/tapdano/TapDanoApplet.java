@@ -19,8 +19,9 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   byte[] lastBuffer = new byte[256];
   byte[] lastResponse = new byte[256];
-  byte[] LAST_SIGNATURE = new byte[64];
+  byte[] POLICY_ID = new byte[28];
   byte[] TWO_FACTOR_KEY = new byte[32];
+  byte[] LAST_SIGNATURE = new byte[64];
 
   short lastResponseLen;
 
@@ -149,6 +150,11 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       pinUnlock(buffer, offsetIn, offsetOut, dataLen);
     }
 
+    // Set PolicyId
+    if (buffer[(byte) (offsetIn + ISO7816.OFFSET_INS)] == (byte) 0xA7) {
+      setPolicyId(buffer, offsetIn, offsetOut, dataLen);
+    }
+
     short responseLen = getTagInfo(buffer, offsetIn, offsetOut, dataLen);
 
     if (isCacheActive) {
@@ -182,6 +188,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     PAIR_GENERATED = false;
     priKeyEncoded = new byte[32];
     pubKeyEncoded = new byte[32];
+    POLICY_ID = new byte[28];
     TWO_FACTOR_KEY = new byte[32];
     LAST_SIGNATURE = new byte[64];
   }
@@ -204,6 +211,10 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, (short) offsetOut, (short) 32);
       offsetOut += (short) 32;
       responseLen += (short) 32;
+
+      Util.arrayCopyNonAtomic(POLICY_ID, (short) 0, buffer, (short) offsetOut, (short) POLICY_ID.length);
+      offsetOut += (short) POLICY_ID.length;
+      responseLen += (short) POLICY_ID.length;
 
       if (!PIN_LOCKED) {
         Util.arrayCopyNonAtomic(TWO_FACTOR_KEY, (short) 0, buffer, (short) offsetOut, (short) TWO_FACTOR_KEY.length);
@@ -285,5 +296,9 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     if (Util.arrayCompare(inputPin, (short) 0, PIN, (short) 0, (short) PIN.length) == 0) {
       PIN_LOCKED = false;
     }
+  }
+
+  private void setPolicyId(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+    Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), POLICY_ID, (short) 0, (short) POLICY_ID.length);
   }
 }
