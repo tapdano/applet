@@ -5,8 +5,12 @@ import javacardx.apdu.ExtendedLength;
 
 public class FIDO2Applet extends Applet implements ExtendedLength {
 
+  private AID TapDanoAID;
+  private TapDanoShareable tapDano;
+
   protected FIDO2Applet() {
     if (Constants.DEBUG) System.out.println("FIDO2Applet constructor");
+    TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
   }
 
   public static void install(byte[] buf, short off, byte len) {
@@ -44,8 +48,8 @@ public class FIDO2Applet extends Applet implements ExtendedLength {
     }
 
     if ((buffer[ISO7816.OFFSET_CLA] == (byte)0x00) && (buffer[ISO7816.OFFSET_INS] == (byte)0x02) && (buffer[ISO7816.OFFSET_P1] == (byte)0x03)) {
-      AID TapDanoAID = new AID(Constants.TapDanoAIDBytes, (short)0, (byte)Constants.TapDanoAIDBytes.length);
-      TapDanoShareable tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+      
+      tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
       if (tapDano != null) {
         short outputLength = tapDano.exec((byte)0x02, buffer, (byte)((extendedAPDU ? ISO7816.OFFSET_EXT_CDATA : ISO7816.OFFSET_CDATA) + 65));
         apdu.setOutgoingAndSend((short)0, outputLength);

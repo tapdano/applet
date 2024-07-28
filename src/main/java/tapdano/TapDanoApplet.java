@@ -25,6 +25,9 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   short lastResponseLen;
 
+  byte[] dataToHash = new byte[33];
+  byte[] inputPin = new byte[4];
+
   NamedParameterSpec params;
   XECKey prikey;
   XECKey pubkey;
@@ -106,19 +109,6 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   public short processTapDano(byte[] buffer, byte offsetIn, byte offsetOut) {
     short dataLen = (short) buffer[(byte) (offsetIn + ISO7816.OFFSET_LC)];
-    byte offsetOutOriginal = offsetOut;
-
-    boolean isCacheActive = (buffer[(byte) (offsetIn + ISO7816.OFFSET_P1)] == (byte) 0x01);
-    byte[] lastBufferTemp = new byte[256];
-
-    if (isCacheActive) {
-      if (Util.arrayCompare(buffer, (short) offsetIn, lastBuffer, (short) 0, (short) (256 - offsetIn)) == (byte) 0) {
-        Util.arrayCopy(lastResponse, (short) 0, buffer, (short) offsetOut, (short) (256 - offsetOut));
-        return lastResponseLen;
-      }
-      dataLen = (short) (dataLen - 8);
-      Util.arrayCopy(buffer, (short) offsetIn, lastBufferTemp, (short) 0, (short) (256 - offsetIn));
-    }
 
     // Burn Tag
     if (buffer[(byte) (offsetIn + ISO7816.OFFSET_INS)] == (byte) 0xA1) {
@@ -155,13 +145,14 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       setPolicyId(buffer, offsetIn, offsetOut, dataLen);
     }
 
-    short responseLen = getTagInfo(buffer, offsetIn, offsetOut, dataLen);
-
-    if (isCacheActive) {
-      lastResponseLen = responseLen;
-      Util.arrayCopy(lastBufferTemp, (short) 0, lastBuffer, (short) 0, (short) lastBuffer.length);
-      Util.arrayCopy(buffer, (short) offsetOutOriginal, lastResponse, (short) 0, (short) (256 - offsetOutOriginal));
+    // Get Memory
+    if (buffer[(byte) (offsetIn + ISO7816.OFFSET_INS)] == (byte) 0xB0) {
+      Util.setShort(buffer, (short)offsetOut, JCSystem.getAvailableMemory(JCSystem.MEMORY_TYPE_TRANSIENT_RESET));
+      Util.setShort(buffer, (short)(offsetOut + (byte)0x02), JCSystem.getAvailableMemory(JCSystem.MEMORY_TYPE_PERSISTENT));
+      return (short)0x0004;
     }
+
+    short responseLen = getTagInfo(buffer, offsetIn, offsetOut, dataLen);
 
     return responseLen;
   }
@@ -186,11 +177,11 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     INITIALIZED = true;
     SIGN_INITIALIZED = false;
     PAIR_GENERATED = false;
-    priKeyEncoded = new byte[32];
-    pubKeyEncoded = new byte[32];
-    POLICY_ID = new byte[28];
-    TWO_FACTOR_KEY = new byte[32];
-    LAST_SIGNATURE = new byte[64];
+    Util.arrayFillNonAtomic(priKeyEncoded, (short) 0, (short) priKeyEncoded.length, (byte) 0);
+    Util.arrayFillNonAtomic(pubKeyEncoded, (short) 0, (short) pubKeyEncoded.length, (byte) 0);
+    Util.arrayFillNonAtomic(POLICY_ID, (short) 0, (short) POLICY_ID.length, (byte) 0);
+    Util.arrayFillNonAtomic(TWO_FACTOR_KEY, (short) 0, (short) TWO_FACTOR_KEY.length, (byte) 0);
+    Util.arrayFillNonAtomic(LAST_SIGNATURE, (short) 0, (short) LAST_SIGNATURE.length, (byte) 0);
   }
 
   private short getTagInfo(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
@@ -261,7 +252,6 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     }
 
     // TWO_FACTOR_KEY
-    byte[] dataToHash = new byte[33];
     Util.arrayCopyNonAtomic(priKeyEncoded, (short) 0, dataToHash, (short) 0, (short) 32);
     dataToHash[32] = (byte) 0x01;
     sha256.doFinal(dataToHash, (short) 0, (short) dataToHash.length, TWO_FACTOR_KEY, (short) 0);
@@ -291,7 +281,6 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   private void pinUnlock(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
-    byte[] inputPin = new byte[PIN.length];
     Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), inputPin, (short) 0, (short) inputPin.length);
     if (Util.arrayCompare(inputPin, (short) 0, PIN, (short) 0, (short) PIN.length) == 0) {
       PIN_LOCKED = false;
