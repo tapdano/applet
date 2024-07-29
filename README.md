@@ -37,7 +37,8 @@ If there is no temporary lock (via PIN):
 
 ## Methods
 
-### Method: `Burn Tag` - Creates or restores a tag TapDano on a card
+### **Burn Tag** (0xA1)
+      Creates or restores a tag TapDano on a card
 **Parameters:**
 - `action`: byte
    - `0x01`: New
@@ -48,25 +49,56 @@ If there is no temporary lock (via PIN):
 - `privateKey`: byte[32] (only for restore)
 - `publicKey`: byte[32] (only for restore)
 
-### Method: `Sign Data` - Signs the received data and returns this signature in the "LAST_SIGNATURE" field
+---
+### **Sign Data** (0xA2)
+      Signs the received data and returns this signature in the "LAST_SIGNATURE" field
 **Parameters:**
-- `data`: byte[32] (larger sizes can also be passed, but the actual limit depends on the communication protocol used (APDH, CTAT, or NDEF))
+- `data`: byte[32] - larger sizes can also be passed, but the actual limit depends on the communication protocol used (APDH, CTAT, or NDEF)
 
-### Method: `Format Tag` - Deletes the TapDano tag from a card, including keys and signatures related to this tag (can be enabled or disabled during installation)J
-### Method: `Lock Tag` - Permanently locks the extraction of the tag's private key. This is the default behavior for Soulbound tags and cannot be undone.
+---
+### **Format Tag** (0xA3)
+      Deletes the TapDano tag from a card, including keys and signatures related to this tag (can be enabled or disabled during installation)
 
-### Method: `Pin Lock` - Temporarily locks the extraction of the tag's private key, two-factor key, and the last signature using a PIN.
+---
+### **Lock Tag** (0xA4)
+      Permanently locks the extraction of the tag's private key. This is the default behavior for Soulbound tags and cannot be undone.
+
+---
+### **Pin Lock** (0xA5)
+      Temporarily locks the extraction of the tag's private key, two-factor key, and the last signature using a PIN.
 **Parameters:**
 - `pin`: byte[4] (this number can be changed)
 
-### Method: `Pin Unlock` - Unlocks the temporary lock via PIN
+---
+### **Pin Unlock** (0xA6)
+      Unlocks the temporary lock via PIN
 **Parameters:**
 - `pin`: byte[4] (this number can be changed)
 
-### Method: `Set PolicyId` - Stores the PolicyId
+---
+### **Set PolicyId** (0xA7)
+      Stores the PolicyId
+**Parameters:**
 - `policyId`: byte[28]
 
-### Method: `Get Memory` - Used only for memory tests during the development of this applet.
+---
+### **Get Memory** (0xB0)
+      Used only for memory tests during the development of this applet.
+
+---
+---
+---
+
+## APDU Examples
+- `00A404000854617044616E6F0100` - Selects the TapDano Applet
+- `00 A1 00 00 02 01 01` - Executes the `Burn Tag` method with parameters `action` and `type`:
+   - `00` - CLA
+   - `A1` - INS (Method `Burn Tag`)
+   - `00` - P1
+   - `00` - P2
+   - `02` - Data Length
+   - `01` - Parameter `action`
+   - `01` - Parameter `type`
 
 ## Environment Setup and Building the application
 1. **Download JavacardKit**: Obtain a copy of [JavacardKit version 3.2](https://www.oracle.com/java/technologies/javacard-sdk-downloads.html) (or jckit_303 if you prefer).
