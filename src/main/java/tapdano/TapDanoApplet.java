@@ -189,7 +189,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     buffer[offsetOut++] = (byte) 0x54; // T[ap]
     buffer[offsetOut++] = (byte) 0x44; // D[ano]
     buffer[offsetOut++] = (byte) 0x01; // Version
-    buffer[offsetOut++] = (byte) 0x00; // Version
+    buffer[offsetOut++] = (byte) 0x01; // Version
     buffer[offsetOut++] = PAIR_GENERATED ? (byte) 0x01 : (byte) 0x00;
     responseLen = (short) 0x00005;
     if (PAIR_GENERATED) {
