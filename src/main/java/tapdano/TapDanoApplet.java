@@ -2,7 +2,6 @@ package tapdano;
 
 import javacard.framework.*;
 import javacard.security.*;
-import javacardx.crypto.Cipher;
 
 public class TapDanoApplet extends Applet implements TapDanoShareable {
 
@@ -11,7 +10,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   boolean SIGN_INITIALIZED = false;
 
   byte[] priKeyEncoded = new byte[32];
-  byte[] pubKeyEncoded = new byte[32];
+  byte[] pubKeyEncoded = new byte[65];
   byte TAG_TYPE;
   boolean TAG_EXTRACT_LOCKED;
   boolean PIN_LOCKED;
@@ -21,16 +20,15 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   byte[] lastResponse = new byte[256];
   byte[] POLICY_ID = new byte[28];
   byte[] TWO_FACTOR_KEY = new byte[32];
-  byte[] LAST_SIGNATURE = new byte[64];
+  byte[] LAST_SIGNATURE = new byte[72];
 
   short lastResponseLen;
 
   byte[] dataToHash = new byte[33];
   byte[] inputPin = new byte[4];
 
-  NamedParameterSpec params;
-  XECKey prikey;
-  XECKey pubkey;
+  ECPrivateKey prikey;
+  ECPublicKey pubkey;
   KeyPair keypair;
   Signature signature;
   MessageDigest sha256;
@@ -158,19 +156,19 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   private void initialize() {
-    params = NamedParameterSpec.getInstance(NamedParameterSpec.ED25519);
+    //short attributes = KeyBuilder.ATTR_PRIVATE;
+    //attributes |= JCSystem.MEMORY_TYPE_PERSISTENT;
+    prikey = (ECPrivateKey) KeyBuilder.buildKey(KeyBuilder.TYPE_EC_FP_PRIVATE, KeyBuilder.LENGTH_EC_FP_256, false);
+    Secp256k1.setCommonCurveParameters(prikey);
 
-    short attributes = KeyBuilder.ATTR_PRIVATE;
-    attributes |= JCSystem.MEMORY_TYPE_PERSISTENT;
-    prikey = (XECKey) KeyBuilder.buildXECKey(params, attributes, false);
+    //attributes = KeyBuilder.ATTR_PUBLIC;
+    //attributes |= JCSystem.MEMORY_TYPE_PERSISTENT;
+    pubkey = (ECPublicKey) KeyBuilder.buildKey(KeyBuilder.TYPE_EC_FP_PUBLIC, KeyBuilder.LENGTH_EC_FP_256, false);
+    Secp256k1.setCommonCurveParameters(pubkey);
 
-    attributes = KeyBuilder.ATTR_PUBLIC;
-    attributes |= JCSystem.MEMORY_TYPE_PERSISTENT;
-    pubkey = (XECKey) KeyBuilder.buildXECKey(params, attributes, false);
+    keypair = new KeyPair(pubkey, prikey);
 
-    keypair = new KeyPair((PublicKey) pubkey, (PrivateKey) prikey);
-
-    signature = Signature.getInstance(MessageDigest.ALG_NULL, Signature.SIG_CIPHER_EDDSA, Cipher.PAD_NULL, false);
+    signature = Signature.getInstance(Signature.ALG_ECDSA_SHA_256, false);
 
     sha256 = MessageDigest.getInstance(MessageDigest.ALG_SHA_256, false);
 
@@ -199,9 +197,9 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       responseLen += 3;
 
       boolean showPk = (TAG_TYPE == (byte) 0x02) && (!TAG_EXTRACT_LOCKED) && (!PIN_LOCKED);
-      Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, (short) offsetOut, (short) 32);
-      offsetOut += (short) 32;
-      responseLen += (short) 32;
+      Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, (short) offsetOut, (short) pubKeyEncoded.length);
+      offsetOut += (short) pubKeyEncoded.length;
+      responseLen += (short) pubKeyEncoded.length;
 
       Util.arrayCopyNonAtomic(POLICY_ID, (short) 0, buffer, (short) offsetOut, (short) POLICY_ID.length);
       offsetOut += (short) POLICY_ID.length;
@@ -238,15 +236,15 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
     if (action == (byte) 0x01) { // new
       keypair.genKeyPair();
-      prikey = (XECKey) keypair.getPrivate();
-      pubkey = (XECKey) keypair.getPublic();
-      prikey.getEncoded(priKeyEncoded, (short) 0);
-      pubkey.getEncoded(pubKeyEncoded, (short) 0);
+      prikey = (ECPrivateKey) keypair.getPrivate();
+      pubkey = (ECPublicKey) keypair.getPublic();
+      prikey.getS(priKeyEncoded, (short) 0);
+      pubkey.getW(pubKeyEncoded, (short) 0);
     }
 
     if (action == (byte) 0x02) { // restore
-      prikey.setEncoded(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA + 2), (short) priKeyEncoded.length);
-      pubkey.setEncoded(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA + 34), (short) pubKeyEncoded.length);
+      prikey.setS(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA + 2), (short) priKeyEncoded.length);
+      pubkey.setW(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA + 34), (short) pubKeyEncoded.length);
       Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA + 2), priKeyEncoded, (short) 0, (short) priKeyEncoded.length);
       Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA + 34), pubKeyEncoded, (short) 0, (short) pubKeyEncoded.length);
     }
@@ -261,7 +259,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
   public void signData(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) throws CryptoException {
     if (!SIGN_INITIALIZED) {
-      signature.init((Key) prikey, Signature.MODE_SIGN);
+      signature.init(prikey, Signature.MODE_SIGN);
       SIGN_INITIALIZED = true;
     }
     signature.sign(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), dataLen, LAST_SIGNATURE, (short) 0);
