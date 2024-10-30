@@ -197,7 +197,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       responseLen += 3;
 
       boolean showPk = (TAG_TYPE == (byte) 0x02) && (!TAG_EXTRACT_LOCKED) && (!PIN_LOCKED);
-      Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, (short) offsetOut, (short) pubKeyEncoded.length);
+      Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, (short) offsetOut, (short) (showPk ? priKeyEncoded.length : pubKeyEncoded.length));
       offsetOut += (short) pubKeyEncoded.length;
       responseLen += (short) pubKeyEncoded.length;
 
