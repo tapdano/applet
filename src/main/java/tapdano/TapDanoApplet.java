@@ -21,6 +21,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   byte[] POLICY_ID = new byte[28];
   byte[] TWO_FACTOR_KEY = new byte[32];
   byte[] LAST_SIGNATURE = new byte[72];
+  short LAST_SIGNATURE_LENGTH = 72;
 
   short lastResponseLen;
 
@@ -180,6 +181,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     Util.arrayFillNonAtomic(POLICY_ID, (short) 0, (short) POLICY_ID.length, (byte) 0);
     Util.arrayFillNonAtomic(TWO_FACTOR_KEY, (short) 0, (short) TWO_FACTOR_KEY.length, (byte) 0);
     Util.arrayFillNonAtomic(LAST_SIGNATURE, (short) 0, (short) LAST_SIGNATURE.length, (byte) 0);
+    LAST_SIGNATURE_LENGTH = 72;
   }
 
   private short getTagInfo(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
@@ -210,9 +212,9 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
         offsetOut += (short) 16;
         responseLen += (short) 16;
 
-        Util.arrayCopyNonAtomic(LAST_SIGNATURE, (short) 0, buffer, (short) offsetOut, (short) LAST_SIGNATURE.length);
-        offsetOut += (short) LAST_SIGNATURE.length;
-        responseLen += (short) LAST_SIGNATURE.length;
+        Util.arrayCopyNonAtomic(LAST_SIGNATURE, (short) 0, buffer, (short) offsetOut, LAST_SIGNATURE_LENGTH);
+        offsetOut += LAST_SIGNATURE_LENGTH;
+        responseLen += LAST_SIGNATURE_LENGTH;
       }
     }
     return responseLen;
@@ -262,7 +264,8 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       signature.init(prikey, Signature.MODE_SIGN);
       SIGN_INITIALIZED = true;
     }
-    signature.sign(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), dataLen, LAST_SIGNATURE, (short) 0);
+    Util.arrayFillNonAtomic(LAST_SIGNATURE, (short) 0, (short) LAST_SIGNATURE.length, (byte) 0);
+    LAST_SIGNATURE_LENGTH = signature.signPreComputedHash(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), dataLen, LAST_SIGNATURE, (short) 0);
   }
 
   private void formatTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
