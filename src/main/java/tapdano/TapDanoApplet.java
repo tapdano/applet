@@ -186,8 +186,8 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     short responseLen = (short) 0;
     buffer[offsetOut++] = (byte) 0x54; // T[ap]
     buffer[offsetOut++] = (byte) 0x44; // D[ano]
-    buffer[offsetOut++] = (byte) 0x01; // Version
-    buffer[offsetOut++] = (byte) 0x01; // Version
+    buffer[offsetOut++] = (byte) 0x02; // Version
+    buffer[offsetOut++] = (byte) 0x00; // Version
     buffer[offsetOut++] = PAIR_GENERATED ? (byte) 0x01 : (byte) 0x00;
     responseLen = (short) 0x00005;
     if (PAIR_GENERATED) {
@@ -207,8 +207,8 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
       if (!PIN_LOCKED) {
         Util.arrayCopyNonAtomic(TWO_FACTOR_KEY, (short) 0, buffer, (short) offsetOut, (short) TWO_FACTOR_KEY.length);
-        offsetOut += (short) TWO_FACTOR_KEY.length;
-        responseLen += (short) TWO_FACTOR_KEY.length;
+        offsetOut += (short) 16;
+        responseLen += (short) 16;
 
         Util.arrayCopyNonAtomic(LAST_SIGNATURE, (short) 0, buffer, (short) offsetOut, (short) LAST_SIGNATURE.length);
         offsetOut += (short) LAST_SIGNATURE.length;
