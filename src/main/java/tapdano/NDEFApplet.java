@@ -85,7 +85,7 @@ public final class NDEFApplet extends Applet {
    * Two bytes are used for the record length,
    * the rest will be available for an NDEF record.
    */
-  private static final short DEFAULT_NDEF_DATA_SIZE = 256;
+  private static final short DEFAULT_NDEF_DATA_SIZE = 512;
 
   /**
    * Configuration: default read access for data file
@@ -116,7 +116,7 @@ public final class NDEFApplet extends Applet {
 
   private AID TapDanoAID;
   private TapDanoShareable tapDano;
-  private byte[] bufferClone = new byte[256];
+  private boolean isConnected = false;
 
   /**
    * Installs an NDEF applet
@@ -353,34 +353,35 @@ public final class NDEFApplet extends Applet {
   private void processReadBinary(APDU apdu) throws ISOException {
     byte[] buffer = apdu.getBuffer();
 
-    byte[] file;
+    short offset = Util.getShort(buffer, ISO7816.OFFSET_P1);
+
     short outputLength;
 
-    // get and check the read offset
-    short offset = Util.getShort(buffer, ISO7816.OFFSET_P1);
+    byte[] file = null;
 
     boolean useTapDano = (vars[VAR_SELECTED_FILE] == FILEID_NDEF_DATA);
     if (useTapDano) {
-      tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
-      outputLength = tapDano.exec((byte)0x03, buffer, ISO7816.OFFSET_CDATA);
-      short le = apdu.setOutgoingNoChaining();
-      apdu.setOutgoingLength(le);
-      apdu.sendBytesLong(buffer, offset, le);
-      return;
+      file = dataFile;
+      if (!isConnected) {
+        tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
+        isConnected = true;
+      }
+      outputLength = tapDano.exec((byte)0x03, file, ISO7816.OFFSET_CDATA);
     } else {
-      // access the file
       file = accessFileForRead(vars[VAR_SELECTED_FILE]);
+      fixCaps(buffer, (short) 0, (short) file.length);
       outputLength = (short)file.length;
-    }
-
-    if (offset < 0 || offset >= file.length) {
-      ISOException.throwIt(ISO7816.SW_WRONG_P1P2);
     }
 
     // determine the output size
     short le = apdu.setOutgoingNoChaining();
     if (le > NDEF_MAX_READ) {
       le = NDEF_MAX_READ;
+    }
+
+    // get and check the read offset
+    if (offset < 0 || offset >= outputLength) {
+      ISOException.throwIt(ISO7816.SW_WRONG_P1P2);
     }
 
     // adjust for end of file
@@ -393,19 +394,8 @@ public final class NDEFApplet extends Applet {
     }
 
     // send the requested data
-    if (vars[VAR_SELECTED_FILE] == FILEID_NDEF_CAPABILITIES) {
-      // send fixed capabilities
-      Util.arrayCopyNonAtomic(file, (short) 0,
-          buffer, (short) 0,
-          (short) file.length);
-      fixCaps(buffer, (short) 0, (short) file.length);
-      apdu.setOutgoingLength(le);
-      apdu.sendBytesLong(buffer, offset, le);
-    } else {
-      // send directly
-      apdu.setOutgoingLength(le);
-      apdu.sendBytesLong(file, offset, le);
-    }
+    apdu.setOutgoingLength(le);
+    apdu.sendBytesLong(file, offset, le);
   }
 
   /**
@@ -422,40 +412,11 @@ public final class NDEFApplet extends Applet {
    */
   private void processUpdateBinary(APDU apdu) throws ISOException {
     byte[] buffer = apdu.getBuffer();
-
-    boolean useTapDano = (vars[VAR_SELECTED_FILE] == FILEID_NDEF_DATA) && (buffer[ISO7816.OFFSET_CDATA] == (byte)0xD5);
-    if (useTapDano) {
-      Util.arrayCopyNonAtomic(buffer, (short)0, bufferClone, (short)0, (short)bufferClone.length);
+    if (!isConnected) {
       tapDano = (TapDanoShareable)JCSystem.getAppletShareableInterfaceObject(TapDanoAID, (byte)0x00);
-      tapDano.exec((byte)0x01, buffer, (byte)(ISO7816.OFFSET_CDATA + 3));
-      return;
+      isConnected = true;
     }
-    
-    // access the file
-    byte[] file = accessFileForWrite(vars[VAR_SELECTED_FILE]);
-
-    // get and check the write offset
-    short offset = Util.getShort(buffer, ISO7816.OFFSET_P1);
-    if (offset < 0 || offset >= file.length) {
-      ISOException.throwIt(ISO7816.SW_WRONG_P1P2);
-    }
-
-    // receive data
-    short lc = apdu.setIncomingAndReceive();
-
-    // check the input size
-    if (lc > NDEF_MAX_WRITE) {
-      ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
-    }
-
-    // file limit checks
-    short limit = (short) (offset + lc);
-    if (limit < 0 || limit >= file.length) {
-      ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
-    }
-
-    // perform the update
-    Util.arrayCopy(buffer, ISO7816.OFFSET_CDATA, file, offset, lc);
+    tapDano.exec((byte)0x01, buffer, (byte)(ISO7816.OFFSET_CDATA + 3));
   }
 
   /**
@@ -544,43 +505,6 @@ public final class NDEFApplet extends Applet {
       access = dataReadAccess;
     }
     // check that we got anything
-    if (file == null) {
-      ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);
-    }
-    // perform access checks
-    if (!checkAccess(file, access)) {
-      ISOException.throwIt(ISO7816.SW_SECURITY_STATUS_NOT_SATISFIED);
-    }
-    return file;
-  }
-
-  /**
-   * Access a file for writing
-   *
-   * This function serves to perform precondition checks
-   * before actually operating on a file in a write operation.
-   *
-   * If this function succeeds then the given fileId was
-   * valid, security access has been granted and writing
-   * of data for this file is possible.
-   *
-   * @param fileId of the file to be written
-   * @return data array of the file
-   * @throws ISOException on error
-   */
-  private byte[] accessFileForWrite(short fileId) throws ISOException {
-    byte[] file = null;
-    byte access = FILE_ACCESS_NONE;
-    // CC can not be written
-    if (fileId == FILEID_NDEF_CAPABILITIES) {
-      ISOException.throwIt(ISO7816.SW_FUNC_NOT_SUPPORTED);
-    }
-    // select relevant data
-    if (fileId == FILEID_NDEF_DATA) {
-      file = dataFile;
-      access = dataWriteAccess;
-    }
-    // check that we got something
     if (file == null) {
       ISOException.throwIt(ISO7816.SW_CONDITIONS_NOT_SATISFIED);
     }

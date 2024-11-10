@@ -34,6 +34,11 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   Signature signature;
   MessageDigest sha256;
 
+  private static final byte[] HEX_CHARS = {
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+  }; 
+
   protected TapDanoApplet(byte[] buf, short offAID, byte lenAID) {
     if (Constants.DEBUG) System.out.println("TapDanoApplet constructor");
     register(buf, offAID, lenAID);
@@ -72,41 +77,78 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     boolean isNDEF_Read = (origin == (byte) 0x03);
     boolean isNDEF_Write = (origin == (byte) 0x01);
     boolean isFIDO = (origin == (byte) 0x02);
+    short offset = 0;
+    short outputLength = 0;
 
-    byte offsetOut = (byte) 5;
-    short outputLength = (short) 0;
+    if (!INITIALIZED) initialize();
 
-    try {
-      if (!INITIALIZED) initialize();
-      outputLength = processTapDano(buffer, offsetIn, offsetOut);
-    } catch (Exception e) {
-      if (Constants.DEBUG) System.out.println("############### Exception ###############");
-      outputLength = (short) 1;
-      buffer[offsetOut] = (byte) 0x50;
+    if (isNDEF_Write) {
+      processTapDano(buffer, offsetIn, (short) 0);
+      return 0;
     }
 
-    if (isNDEF_Read || isNDEF_Write) {
-      buffer[0] = (byte) 0x00;
-      buffer[1] = (byte) (outputLength + 3);
-      buffer[2] = (byte) 0xD5;
-      buffer[3] = (byte) 0x00;
-      buffer[4] = (byte) outputLength;
-      outputLength += (short) 5;
+    if (isNDEF_Read) {
+      buffer[offset++] = (byte) 0x00;
+      buffer[offset++] = (byte) 0x00; // TOTAL LEN
+      buffer[offset++] = (byte) 0x81; // HEADER #1: MB=1, ME=0, CF=0, SR=0, IL=0, TNF=0x01 (Well-Known Type)
+      buffer[offset++] = (byte) 0x01; // TYPE LENGTH: 1 byte ('U')
+
+      outputLength = (short)(pubKeyEncoded.length * 2);
+      short urlLen = (short)(16 + outputLength);
+      buffer[offset++] = (byte) 0x00; // PAYLOAD LENGTH
+      buffer[offset++] = (byte) 0x00; // PAYLOAD LENGTH
+      buffer[offset++] = (byte)(urlLen >> 8);
+      buffer[offset++] = (byte)(urlLen & 0x00FF);
+
+      buffer[offset++] = (byte) 0x55; // TYPE: 'U' (URI Record)
+      buffer[offset++] = (byte) 0x04; // PAYLOAD - https
+      buffer[offset++] = (byte) 0x74; // t
+      buffer[offset++] = (byte) 0x61; // a
+      buffer[offset++] = (byte) 0x70; // p
+      buffer[offset++] = (byte) 0x64; // d
+      buffer[offset++] = (byte) 0x61; // a
+      buffer[offset++] = (byte) 0x6E; // n
+      buffer[offset++] = (byte) 0x6F; // o
+      buffer[offset++] = (byte) 0x2E; // .
+      buffer[offset++] = (byte) 0x63; // c
+      buffer[offset++] = (byte) 0x6F; // o
+      buffer[offset++] = (byte) 0x6D; // m
+      buffer[offset++] = (byte) 0x2F; // /
+      buffer[offset++] = (byte) 0x3F; // ?
+      buffer[offset++] = (byte) 0x74; // t
+      buffer[offset++] = (byte) 0x3D; // =
+      for (short i = 0; i < pubKeyEncoded.length; i++) {
+        buffer[offset++] = HEX_CHARS[(pubKeyEncoded[i] >> 4) & 0x0F];
+        buffer[offset++] = HEX_CHARS[(pubKeyEncoded[i] & 0x0F)];
+      }
+
+      buffer[offset++] = (byte) 0x45; // HEADER #2: MB=0, ME=1, CF=0, SR=0, IL=0, TNF=0x05 (Unknown Type)
+      buffer[offset++] = (byte) 0x00; // TYPE LENGTH: 0 byte
+      outputLength = processTapDano(buffer, offsetIn, (short)(offset + 4));
+      buffer[offset++] = (byte) 0x00; // PAYLOAD LENGTH
+      buffer[offset++] = (byte) 0x00; // PAYLOAD LENGTH
+      buffer[offset++] = (byte) (outputLength >> 8); // PAYLOAD LENGTH
+      buffer[offset++] = (byte) (outputLength & 0x00FF); // PAYLOAD LENGTH
+      
+      offset += outputLength;
+
+      buffer[0] = (byte)(((short)(offset - 2)) >> 8);
+      buffer[1] = (byte)(((short)(offset - 2)) & 0x00FF);
     }
 
     if (isFIDO) {
-      outputLength += (byte) 5;
-      buffer[0] = (byte) 0x01;
-      buffer[1] = (byte) 0x00;
-      buffer[2] = (byte) 0x00;
-      buffer[3] = (byte) 0x00;
-      buffer[4] = (byte) 0x01;
+      buffer[offset++] = (byte) 0x01;
+      buffer[offset++] = (byte) 0x00;
+      buffer[offset++] = (byte) 0x00;
+      buffer[offset++] = (byte) 0x00;
+      buffer[offset++] = (byte) 0x01;
+      outputLength = processTapDano(buffer, offsetIn, offset);
+      offset += outputLength;
     }
-
-    return outputLength;
+    return offset;
   }
 
-  public short processTapDano(byte[] buffer, byte offsetIn, byte offsetOut) {
+  public short processTapDano(byte[] buffer, byte offsetIn, short offsetOut) {
     short dataLen = (short) buffer[(byte) (offsetIn + ISO7816.OFFSET_LC)];
 
     // Burn Tag
@@ -146,7 +188,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
 
     // Get Memory
     if (buffer[(byte) (offsetIn + ISO7816.OFFSET_INS)] == (byte) 0xB0) {
-      Util.setShort(buffer, (short)offsetOut, JCSystem.getAvailableMemory(JCSystem.MEMORY_TYPE_TRANSIENT_RESET));
+      Util.setShort(buffer, offsetOut, JCSystem.getAvailableMemory(JCSystem.MEMORY_TYPE_TRANSIENT_RESET));
       Util.setShort(buffer, (short)(offsetOut + (byte)0x02), JCSystem.getAvailableMemory(JCSystem.MEMORY_TYPE_PERSISTENT));
       return (short)0x0004;
     }
@@ -157,13 +199,9 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
   }
 
   private void initialize() {
-    //short attributes = KeyBuilder.ATTR_PRIVATE;
-    //attributes |= JCSystem.MEMORY_TYPE_PERSISTENT;
     prikey = (ECPrivateKey) KeyBuilder.buildKey(KeyBuilder.TYPE_EC_FP_PRIVATE, KeyBuilder.LENGTH_EC_FP_256, false);
     Secp256k1.setCommonCurveParameters(prikey);
 
-    //attributes = KeyBuilder.ATTR_PUBLIC;
-    //attributes |= JCSystem.MEMORY_TYPE_PERSISTENT;
     pubkey = (ECPublicKey) KeyBuilder.buildKey(KeyBuilder.TYPE_EC_FP_PUBLIC, KeyBuilder.LENGTH_EC_FP_256, false);
     Secp256k1.setCommonCurveParameters(pubkey);
 
@@ -184,7 +222,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     LAST_SIGNATURE_LENGTH = 72;
   }
 
-  private short getTagInfo(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private short getTagInfo(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     short responseLen = (short) 0;
     buffer[offsetOut++] = (byte) 0x54; // T[ap]
     buffer[offsetOut++] = (byte) 0x44; // D[ano]
@@ -199,20 +237,20 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
       responseLen += 3;
 
       boolean showPk = (TAG_TYPE == (byte) 0x02) && (!TAG_EXTRACT_LOCKED) && (!PIN_LOCKED);
-      Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, (short) offsetOut, (short) (showPk ? priKeyEncoded.length : pubKeyEncoded.length));
+      Util.arrayCopyNonAtomic(showPk ? priKeyEncoded : pubKeyEncoded, (short) 0, buffer, offsetOut, (short) (showPk ? priKeyEncoded.length : pubKeyEncoded.length));
       offsetOut += (short) pubKeyEncoded.length;
       responseLen += (short) pubKeyEncoded.length;
 
-      Util.arrayCopyNonAtomic(POLICY_ID, (short) 0, buffer, (short) offsetOut, (short) POLICY_ID.length);
+      Util.arrayCopyNonAtomic(POLICY_ID, (short) 0, buffer, offsetOut, (short) POLICY_ID.length);
       offsetOut += (short) POLICY_ID.length;
       responseLen += (short) POLICY_ID.length;
 
       if (!PIN_LOCKED) {
-        Util.arrayCopyNonAtomic(TWO_FACTOR_KEY, (short) 0, buffer, (short) offsetOut, (short) TWO_FACTOR_KEY.length);
-        offsetOut += (short) 16;
-        responseLen += (short) 16;
+        Util.arrayCopyNonAtomic(TWO_FACTOR_KEY, (short) 0, buffer, offsetOut, (short) TWO_FACTOR_KEY.length);
+        offsetOut += (short) 32;
+        responseLen += (short) 32;
 
-        Util.arrayCopyNonAtomic(LAST_SIGNATURE, (short) 0, buffer, (short) offsetOut, LAST_SIGNATURE_LENGTH);
+        Util.arrayCopyNonAtomic(LAST_SIGNATURE, (short) 0, buffer, offsetOut, LAST_SIGNATURE_LENGTH);
         offsetOut += LAST_SIGNATURE_LENGTH;
         responseLen += LAST_SIGNATURE_LENGTH;
       }
@@ -220,7 +258,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     return responseLen;
   }
 
-  private void burnTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private void burnTag(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     byte action = buffer[(short) (offsetIn + ISO7816.OFFSET_CDATA)];
     byte type = buffer[(short) (offsetIn + ISO7816.OFFSET_CDATA + 1)];
 
@@ -259,7 +297,7 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     PAIR_GENERATED = true;
   }
 
-  public void signData(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) throws CryptoException {
+  public void signData(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) throws CryptoException {
     if (!SIGN_INITIALIZED) {
       signature.init(prikey, Signature.MODE_SIGN);
       SIGN_INITIALIZED = true;
@@ -268,27 +306,27 @@ public class TapDanoApplet extends Applet implements TapDanoShareable {
     LAST_SIGNATURE_LENGTH = signature.signPreComputedHash(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), dataLen, LAST_SIGNATURE, (short) 0);
   }
 
-  private void formatTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private void formatTag(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     initialize();
   }
 
-  private void lockTag(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private void lockTag(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     TAG_EXTRACT_LOCKED = true;
   }
 
-  private void pinLock(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private void pinLock(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), PIN, (short) 0, (short) PIN.length);
     PIN_LOCKED = true;
   }
 
-  private void pinUnlock(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private void pinUnlock(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), inputPin, (short) 0, (short) inputPin.length);
     if (Util.arrayCompare(inputPin, (short) 0, PIN, (short) 0, (short) PIN.length) == 0) {
       PIN_LOCKED = false;
     }
   }
 
-  private void setPolicyId(byte[] buffer, byte offsetIn, byte offsetOut, short dataLen) {
+  private void setPolicyId(byte[] buffer, byte offsetIn, short offsetOut, short dataLen) {
     Util.arrayCopyNonAtomic(buffer, (short) (offsetIn + ISO7816.OFFSET_CDATA), POLICY_ID, (short) 0, (short) POLICY_ID.length);
   }
 }

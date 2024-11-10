@@ -4,9 +4,9 @@ function ndefRecordHeader(MB, ME, CF, SR, IL, TNF) {
   return hexString;
 }
 
-console.log(ndefRecordHeader(1, 0, 0, 1, 0, 0x01));
+console.log(ndefRecordHeader(1, 0, 0, 0, 0, 0x01));
 
-console.log(ndefRecordHeader(0, 1, 0, 1, 0, 0x05));
+console.log(ndefRecordHeader(0, 1, 0, 0, 0, 0x05));
 
 /*
 00
