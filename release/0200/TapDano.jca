@@ -1,0 +1,7250 @@
+// converted by version  [v3.0.4]
+// on Wed Jun 11 22:16:27 BRT 2025
+
+.package tapdano {
+	.aid 0x54:0x61:0x70:0x44:0x61:0x6E:0x6F;
+	.version 0.1;
+
+	.imports {
+		0xA0:0x0:0x0:0x0:0x62:0x0:0x1 1.0;		//java/lang
+		0xA0:0x0:0x0:0x0:0x62:0x1:0x1 1.5;		//javacard/framework
+		0xA0:0x0:0x0:0x0:0x62:0x1:0x2 1.5;		//javacard/security
+		0xA0:0x0:0x0:0x0:0x62:0x2:0x1 1.5;		//javacardx/crypto
+		0xA0:0x0:0x0:0x0:0x62:0x2:0x9 1.0;		//javacardx/apdu
+	}
+
+	.applet {
+		0x54:0x61:0x70:0x44:0x61:0x6E:0x6F:0x1 AppletInstaller;
+	}
+
+	.constantPool {
+		// 0
+		instanceFieldRef 1.6 FIDO2Applet/TapDanoAID;
+		// 1
+		instanceFieldRef TapDanoShareable FIDO2Applet/tapDano;
+		// 2
+		instanceFieldRef short[] NDEFApplet/vars;
+		// 3
+		instanceFieldRef boolean NDEFApplet/isConnected;
+		// 4
+		instanceFieldRef byte NDEFApplet/dataReadAccess;
+		// 5
+		instanceFieldRef byte NDEFApplet/dataWriteAccess;
+		// 6
+		instanceFieldRef byte[] NDEFApplet/capsFile;
+		// 7
+		instanceFieldRef byte[] NDEFApplet/dataFile;
+		// 8
+		instanceFieldRef 1.6 NDEFApplet/TapDanoAID;
+		// 9
+		instanceFieldRef TapDanoShareable NDEFApplet/tapDano;
+		// 10
+		instanceFieldRef boolean TapDanoApplet/INITIALIZED;
+		// 11
+		instanceFieldRef boolean TapDanoApplet/PAIR_GENERATED;
+		// 12
+		instanceFieldRef boolean TapDanoApplet/SIGN_INITIALIZED;
+		// 13
+		instanceFieldRef byte[] TapDanoApplet/priKeyEncoded;
+		// 14
+		instanceFieldRef byte[] TapDanoApplet/pubKeyEncoded;
+		// 15
+		instanceFieldRef byte[] TapDanoApplet/PIN;
+		// 16
+		instanceFieldRef byte[] TapDanoApplet/lastBuffer;
+		// 17
+		instanceFieldRef byte[] TapDanoApplet/lastResponse;
+		// 18
+		instanceFieldRef byte[] TapDanoApplet/POLICY_ID;
+		// 19
+		instanceFieldRef byte[] TapDanoApplet/TWO_FACTOR_KEY;
+		// 20
+		instanceFieldRef byte[] TapDanoApplet/LAST_SIGNATURE;
+		// 21
+		instanceFieldRef short TapDanoApplet/LAST_SIGNATURE_LENGTH;
+		// 22
+		instanceFieldRef byte[] TapDanoApplet/dataToHash;
+		// 23
+		instanceFieldRef byte[] TapDanoApplet/inputPin;
+		// 24
+		instanceFieldRef 2.18 TapDanoApplet/prikey;
+		// 25
+		instanceFieldRef 2.19 TapDanoApplet/pubkey;
+		// 26
+		instanceFieldRef 2.16 TapDanoApplet/keypair;
+		// 27
+		instanceFieldRef 2.15 TapDanoApplet/signature;
+		// 28
+		instanceFieldRef 2.11 TapDanoApplet/sha256;
+		// 29
+		instanceFieldRef byte TapDanoApplet/TAG_TYPE;
+		// 30
+		instanceFieldRef boolean TapDanoApplet/TAG_EXTRACT_LOCKED;
+		// 31
+		instanceFieldRef boolean TapDanoApplet/PIN_LOCKED;
+		// 32
+		.classRef 2.16;		// javacard/security/KeyPair
+		// 33
+		staticMethodRef 2.16.1(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V;		// javacard/security/KeyPair.<init>(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V
+			.descriptor	Ljavacard/security/PublicKey;	2.3;
+			.descriptor	Ljavacard/security/PrivateKey;	2.2;
+
+		// 34
+		staticFieldRef 2.16 Crypto/keyPair;
+		// 35
+		virtualMethodRef 2.16.2()Ljavacard/security/PrivateKey;;		// getPrivate()Ljavacard/security/PrivateKey;
+			.descriptor	Ljavacard/security/PrivateKey;	2.2;
+
+		// 36
+		.classRef 2.17;		// javacard/security/ECKey
+		// 37
+		virtualMethodRef 2.16.3()Ljavacard/security/PublicKey;;		// getPublic()Ljavacard/security/PublicKey;
+			.descriptor	Ljavacard/security/PublicKey;	2.3;
+
+		// 38
+		staticFieldRef 3.1 Crypto/blobEncryptDecryptAES;
+		// 39
+		staticMethodRef Crypto/initTransientPrivate([BS)V;
+		// 40
+		staticMethodRef 1.16.3([BSSB)S;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+		// 41
+		virtualMethodRef 2.15.3(Ljavacard/security/Key;B)V;		// init(Ljavacard/security/Key;B)V
+			.descriptor	Ljavacard/security/Key;	2.0;
+
+		// 42
+		virtualMethodRef 2.15.5([BSS[BS)S;		// sign([BSS[BS)S
+		// 43
+		.classRef 0.2;		// java/lang/Exception
+		// 44
+		virtualMethodRef 2.15.7([BSS[BSS)Z;		// verify([BSS[BSS)Z
+		// 45
+		staticFieldRef byte[] Crypto/IV_ZERO;
+		// 46
+		virtualMethodRef 3.1.4(Ljavacard/security/Key;B[BSS)V;		// init(Ljavacard/security/Key;B[BSS)V
+			.descriptor	Ljavacard/security/Key;	2.0;
+
+		// 47
+		staticFieldRef byte[] Crypto/IV_ZERO_AES;
+		// 48
+		virtualMethodRef 2.14.1([BSS)V;		// generateData([BSS)V
+		// 49
+		staticMethodRef 1.3.0()V;		// javacard/framework/Applet.<init>()V
+		// 50
+		.classRef 1.6;		// javacard/framework/AID
+		// 51
+		staticFieldRef byte[] Constants/TapDanoAIDBytes;
+		// 52
+		staticMethodRef 1.6.0([BSB)V;		// javacard/framework/AID.<init>([BSB)V
+		// 53
+		staticMethodRef 0.0.0()V;		// java/lang/Object.<init>()V
+		// 54
+		.classRef FIDO2Applet;
+		// 55
+		staticMethodRef FIDO2Applet/<init>()V;
+		// 56
+		virtualMethodRef 1.3.2([BSB)V;		// register([BSB)V
+		// 57
+		virtualMethodRef 1.10.1()[B;		// getBuffer()[B
+		// 58
+		virtualMethodRef 1.3.3()Z;		// selectingApplet()Z
+		// 59
+		virtualMethodRef 1.10.8(SS)V;		// setOutgoingAndSend(SS)V
+		// 60
+		staticMethodRef 1.7.1(S)V;		// javacard/framework/ISOException.throwIt(S)V
+		// 61
+		staticMethodRef 1.8.4(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;		// javacard/framework/JCSystem.getAppletShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;
+			.descriptor	Ljavacard/framework/AID;	1.6;
+			.descriptor	Ljavacard/framework/Shareable;	1.2;
+
+		// 62
+		.classRef TapDanoShareable;
+		// 63
+		.classRef 2.12;		// javacard/security/CryptoException
+		// 64
+		virtualMethodRef 1.3.3()Z;		// selectingApplet()Z
+		// 65
+		staticMethodRef 1.8.13(SB)[B;		// javacard/framework/JCSystem.makeTransientByteArray(SB)[B
+		// 66
+		virtualMethodRef 1.10.13()Z;		// isSecureMessagingCLA()Z
+		// 67
+		virtualMethodRef 1.10.14()Z;		// isISOInterindustryCLA()Z
+		// 68
+		staticMethodRef NDEFApplet/processSelect(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+		// 69
+		staticMethodRef NDEFApplet/processReadBinary(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+		// 70
+		staticMethodRef NDEFApplet/processUpdateBinary(Ljavacard/framework/APDU;)V;
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+		// 71
+		.classRef NDEFApplet;
+		// 72
+		staticMethodRef NDEFApplet/<init>()V;
+		// 73
+		virtualMethodRef 1.3.2([BSB)V;		// register([BSB)V
+		// 74
+		staticFieldRef byte[] Crypto/scratch;
+		// 75
+		staticMethodRef 1.8.15(SB)[S;		// javacard/framework/JCSystem.makeTransientShortArray(SB)[S
+		// 76
+		staticMethodRef 2.14.0(B)Ljavacard/security/RandomData;;		// javacard/security/RandomData.getInstance(B)Ljavacard/security/RandomData;
+			.descriptor	Ljavacard/security/RandomData;	2.14;
+
+		// 77
+		staticFieldRef 2.14 Crypto/random;
+		// 78
+		staticMethodRef NDEFApplet/makeCaps(SBB)[B;
+		// 79
+		staticMethodRef 2.13.0(BSZ)Ljavacard/security/Key;;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+			.descriptor	Ljavacard/security/Key;	2.0;
+
+		// 80
+		staticMethodRef NDEFApplet/makeData(S[BSS)[B;
+		// 81
+		.classRef 2.18;		// javacard/security/ECPrivateKey
+		// 82
+		staticFieldRef 2.18 Crypto/transientPrivate;
+		// 83
+		staticMethodRef 1.16.6([BSS)S;		// javacard/framework/Util.setShort([BSS)S
+		// 84
+		staticMethodRef NDEFApplet/fixAccess([BB)B;
+		// 85
+		virtualMethodRef 1.10.6()S;		// setIncomingAndReceive()S
+		// 86
+		staticMethodRef 1.16.4([BS)S;		// javacard/framework/Util.getShort([BS)S
+		// 87
+		staticFieldRef boolean Crypto/transientPrivateTransient;
+		// 88
+		staticMethodRef NDEFApplet/accessFileForRead(S)[B;
+		// 89
+		staticMethodRef NDEFApplet/fixCaps([BSS)V;
+		// 90
+		virtualMethodRef 1.10.10()S;		// setOutgoingNoChaining()S
+		// 91
+		virtualMethodRef 1.10.9(S)V;		// setOutgoingLength(S)V
+		// 92
+		virtualMethodRef 1.10.5([BSS)V;		// sendBytesLong([BSS)V
+		// 93
+		staticMethodRef 1.10.2()B;		// javacard/framework/APDU.getProtocol()B
+		// 94
+		staticMethodRef NDEFApplet/checkAccess([BB)Z;
+		// 95
+		staticFieldRef short[] SHA512/working;
+		// 96
+		staticFieldRef short[] SHA512/blk;
+		// 97
+		virtualMethodRef SHA512/init()V;
+		// 98
+		staticMethodRef SHA512/load([BSS)V;
+		// 99
+		staticMethodRef SHA512/hashBlock()V;
+		// 100
+		virtualMethodRef SHA512/update([BSS)V;
+		// 101
+		virtualMethodRef SHA512/zeroFillBlk()V;
+		// 102
+		virtualMethodRef SHA512/getLength()B;
+		// 103
+		staticFieldRef short[] SHA512/HINIT;
+		// 104
+		staticFieldRef short[] SHA512/primeSqrt;
+		// 105
+		staticFieldRef byte[] Secp256k1/SECP256K1_A;
+		// 106
+		staticFieldRef byte[] Secp256k1/SECP256K1_B;
+		// 107
+		staticFieldRef byte[] Secp256k1/SECP256K1_FP;
+		// 108
+		staticFieldRef byte[] Secp256k1/SECP256K1_G;
+		// 109
+		staticFieldRef byte[] Secp256k1/SECP256K1_R;
+		// 110
+		staticMethodRef Secp256k1/setCommonCurveParameters(Ljavacard/security/ECKey;)Z;
+			.descriptor	Ljavacard/security/ECKey;	2.17;
+
+		// 111
+		staticMethodRef 2.11.0(BZ)Ljavacard/security/MessageDigest;;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+			.descriptor	Ljavacard/security/MessageDigest;	2.11;
+
+		// 112
+		staticFieldRef 2.11 Crypto/digestFull;
+		// 113
+		staticFieldRef 2.11 Crypto/digestAuthorization;
+		// 114
+		staticFieldRef 2.11 Crypto/digestScratch;
+		// 115
+		staticMethodRef 3.1.0(BZ)Ljavacardx/crypto/Cipher;;		// javacardx/crypto/Cipher.getInstance(BZ)Ljavacardx/crypto/Cipher;
+			.descriptor	Ljavacardx/crypto/Cipher;	3.1;
+
+		// 116
+		staticFieldRef 3.1 Crypto/blobEncryptDecrypt;
+		// 117
+		staticMethodRef 2.15.0(BZ)Ljavacard/security/Signature;;		// javacard/security/Signature.getInstance(BZ)Ljavacard/security/Signature;
+			.descriptor	Ljavacard/security/Signature;	2.15;
+
+		// 118
+		staticFieldRef 2.15 Crypto/signature;
+		// 119
+		staticFieldRef 2.11 Crypto/digestRipemd;
+		// 120
+		staticFieldRef 2.11 Crypto/digestSha512;
+		// 121
+		.classRef SHA512;
+		// 122
+		staticMethodRef SHA512/<init>()V;
+		// 123
+		staticFieldRef SHA512 Crypto/sha512;
+		// 124
+		virtualMethodRef 1.3.2([BSB)V;		// register([BSB)V
+		// 125
+		.classRef TapDanoApplet;
+		// 126
+		staticMethodRef TapDanoApplet/<init>([BSB)V;
+		// 127
+		staticMethodRef TapDanoApplet/initialize()V;
+		// 128
+		virtualMethodRef 1.3.3()Z;		// selectingApplet()Z
+		// 129
+		virtualMethodRef TapDanoApplet/processTapDano([BBS)S;
+		// 130
+		staticFieldRef byte[] TapDanoApplet/HEX_CHARS;
+		// 131
+		staticMethodRef TapDanoApplet/burnTag([BBSS)V;
+		// 132
+		virtualMethodRef TapDanoApplet/signData([BBSS)V;
+		// 133
+		staticMethodRef TapDanoApplet/formatTag([BBSS)V;
+		// 134
+		staticMethodRef TapDanoApplet/lockTag([BBSS)V;
+		// 135
+		staticMethodRef TapDanoApplet/pinLock([BBSS)V;
+		// 136
+		staticMethodRef TapDanoApplet/pinUnlock([BBSS)V;
+		// 137
+		staticMethodRef TapDanoApplet/setPolicyId([BBSS)V;
+		// 138
+		staticMethodRef 1.8.16(B)S;		// javacard/framework/JCSystem.getAvailableMemory(B)S
+		// 139
+		staticMethodRef TapDanoApplet/getTagInfo([BBSS)S;
+		// 140
+		staticFieldRef 2.15 Crypto/signatureHmac;
+		// 141
+		.classRef 2.23;		// javacard/security/HMACKey
+		// 142
+		staticFieldRef 2.23 Crypto/keyHmac;
+		// 143
+		staticFieldRef 2.23 Crypto/keyHmac2;
+		// 144
+		staticMethodRef 2.22.0(BZ)Ljavacard/security/KeyAgreement;;		// javacard/security/KeyAgreement.getInstance(BZ)Ljavacard/security/KeyAgreement;
+			.descriptor	Ljavacard/security/KeyAgreement;	2.22;
+
+		// 145
+		staticFieldRef 2.22 Crypto/keyAgreement;
+		// 146
+		.classRef 2.19;		// javacard/security/ECPublicKey
+		// 147
+		staticFieldRef 2.19 Crypto/publicKey;
+		// 148
+		staticMethodRef 1.16.2([BS[BSS)S;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+		// 149
+		virtualMethodRef 2.16.1()V;		// genKeyPair()V
+		// 150
+		virtualMethodRef 2.11.1([BSS[BS)S;		// doFinal([BSS[BS)S
+		// 151
+		virtualMethodRef 2.15.9([BSS[BS)S;		// signPreComputedHash([BSS[BS)S
+		// 152
+		staticMethodRef 1.16.0([BS[BSS)B;		// javacard/framework/Util.arrayCompare([BS[BSS)B
+		// 153
+		staticMethodRef TapDanoApplet/install([BSB)V;
+		// 154
+		staticMethodRef FIDO2Applet/install([BSB)V;
+		// 155
+		staticMethodRef NDEFApplet/install([BSB)V;
+	}
+
+	.interface public abstract TapDanoShareable 0 {
+
+		.shareable;
+
+		.superInterfaces {
+			1.2;		// javacard/framework/Shareable
+		}
+
+		.method public abstract exec(B[BB)S 0 {
+		}
+
+	}
+
+	.class public Constants 1 extends 0.0 {		// extends java/lang/Object
+
+		.fields {
+			public static final boolean DEBUG = 0;		// Z
+			public static final byte[] TapDanoAIDBytes 0 = {84,97,112,68,97,110,111,1};		// [B
+		}
+
+		.publicMethodTable 1 {
+			equals(Ljava/lang/Object;)Z;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public <init>()V 0 {
+			.stack 1;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 53;		// java/lang/Object.<init>()V
+					return;
+		}
+
+	}
+
+	.class public Crypto 2 extends 0.0 {		// extends java/lang/Object
+
+		.fields {
+			protected static 2.18 transientPrivate 0;		// Ljavacard/security/ECPrivateKey;
+			protected static boolean transientPrivateTransient 1;		// Z
+			protected static 2.15 signature 2;		// Ljavacard/security/Signature;
+			protected static 2.15 signatureHmac 3;		// Ljavacard/security/Signature;
+			protected static 2.23 keyHmac 4;		// Ljavacard/security/HMACKey;
+			protected static 2.23 keyHmac2 5;		// Ljavacard/security/HMACKey;
+			protected static 2.11 digestFull 6;		// Ljavacard/security/MessageDigest;
+			protected static 2.11 digestAuthorization 7;		// Ljavacard/security/MessageDigest;
+			protected static 2.11 digestScratch 8;		// Ljavacard/security/MessageDigest;
+			protected static 2.11 digestRipemd 9;		// Ljavacard/security/MessageDigest;
+			protected static 2.11 digestSha512 10;		// Ljavacard/security/MessageDigest;
+			protected static SHA512 sha512 11;		// Ltapdano/SHA512;
+			protected static 2.14 random 12;		// Ljavacard/security/RandomData;
+			protected static 3.1 blobEncryptDecrypt 13;		// Ljavacardx/crypto/Cipher;
+			protected static 3.1 blobEncryptDecryptAES 14;		// Ljavacardx/crypto/Cipher;
+			protected static 2.22 keyAgreement 15;		// Ljavacard/security/KeyAgreement;
+			protected static 2.16 keyPair 16;		// Ljavacard/security/KeyPair;
+			protected static 2.19 publicKey 17;		// Ljavacard/security/ECPublicKey;
+			private static final short HMAC_SHA512_SIZE = 256;		// S
+			private static final byte[] IV_ZERO = {0,0,0,0,0,0,0,0};		// [B
+			private static final byte[] IV_ZERO_AES = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};		// [B
+			private static byte[] scratch;		// [B
+		}
+
+		.publicMethodTable 1 {
+			equals(Ljava/lang/Object;)Z;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public <init>()V 0 {
+			.stack 1;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 53;		// java/lang/Object.<init>()V
+					return;
+		}
+
+		.method public static init()V 1 {
+			.stack 6;
+			.locals 2;
+
+				L0:	sconst_1;
+					sconst_2;
+					invokestatic 65;		// javacard/framework/JCSystem.makeTransientByteArray(SB)[B
+					putstatic_a 74;		// reference tapdano/Crypto.scratch
+					sconst_2;
+					invokestatic 76;		// javacard/security/RandomData.getInstance(B)Ljavacard/security/RandomData;
+					putstatic_a 77;		// reference tapdano/Crypto.random
+				L1:	bspush 31;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 81;		// T_CLASSORINTERFACE javacard/security/ECPrivateKey
+					putstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					sconst_1;
+					putstatic_b 87;		// boolean tapdano/Crypto.transientPrivateTransient
+				L2:	goto L7;
+				L3:	astore_0;
+				L4:	bspush 30;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 81;		// T_CLASSORINTERFACE javacard/security/ECPrivateKey
+					putstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					sconst_1;
+					putstatic_b 87;		// boolean tapdano/Crypto.transientPrivateTransient
+				L5:	goto L7;
+				L6:	astore_1;
+					bspush 12;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 81;		// T_CLASSORINTERFACE javacard/security/ECPrivateKey
+					putstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					getstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+				L7:	sconst_4;
+					sconst_0;
+					invokestatic 111;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+					putstatic_a 112;		// reference tapdano/Crypto.digestFull
+					sconst_4;
+					sconst_0;
+					invokestatic 111;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+					putstatic_a 113;		// reference tapdano/Crypto.digestAuthorization
+					sconst_4;
+					sconst_0;
+					invokestatic 111;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+					putstatic_a 114;		// reference tapdano/Crypto.digestScratch
+					sconst_1;
+					sconst_0;
+					invokestatic 115;		// javacardx/crypto/Cipher.getInstance(BZ)Ljavacardx/crypto/Cipher;
+					putstatic_a 116;		// reference tapdano/Crypto.blobEncryptDecrypt
+					bspush 33;
+					sconst_0;
+					invokestatic 117;		// javacard/security/Signature.getInstance(BZ)Ljavacard/security/Signature;
+					putstatic_a 118;		// reference tapdano/Crypto.signature
+				L8:	sconst_3;
+					sconst_0;
+					invokestatic 111;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+					putstatic_a 119;		// reference tapdano/Crypto.digestRipemd
+				L9:	goto L11;
+				L10:	astore_0;
+				L11:	bspush 6;
+					sconst_0;
+					invokestatic 111;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+					putstatic_a 120;		// reference tapdano/Crypto.digestSha512
+				L12:	goto L14;
+				L13:	astore_0;
+					new 121;		// tapdano/SHA512
+					dup;
+					invokespecial 122;		// tapdano/SHA512.<init>()V
+					putstatic_a 123;		// reference tapdano/Crypto.sha512
+				L14:	bspush 27;
+					sconst_0;
+					invokestatic 117;		// javacard/security/Signature.getInstance(BZ)Ljavacard/security/Signature;
+					putstatic_a 140;		// reference tapdano/Crypto.signatureHmac
+				L15:	bspush 20;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 141;		// T_CLASSORINTERFACE javacard/security/HMACKey
+					putstatic_a 142;		// reference tapdano/Crypto.keyHmac
+					bspush 20;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 141;		// T_CLASSORINTERFACE javacard/security/HMACKey
+					putstatic_a 143;		// reference tapdano/Crypto.keyHmac2
+				L16:	goto L21;
+				L17:	astore_0;
+				L18:	bspush 19;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 141;		// T_CLASSORINTERFACE javacard/security/HMACKey
+					putstatic_a 142;		// reference tapdano/Crypto.keyHmac
+					bspush 19;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 141;		// T_CLASSORINTERFACE javacard/security/HMACKey
+					putstatic_a 143;		// reference tapdano/Crypto.keyHmac2
+				L19:	goto L21;
+				L20:	astore_1;
+					bspush 21;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 141;		// T_CLASSORINTERFACE javacard/security/HMACKey
+					putstatic_a 142;		// reference tapdano/Crypto.keyHmac
+					bspush 21;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 141;		// T_CLASSORINTERFACE javacard/security/HMACKey
+					putstatic_a 143;		// reference tapdano/Crypto.keyHmac2
+				L21:	goto L23;
+				L22:	astore_0;
+					aconst_null;
+					putstatic_a 140;		// reference tapdano/Crypto.signatureHmac
+				L23:	sconst_3;
+					sconst_0;
+					invokestatic 144;		// javacard/security/KeyAgreement.getInstance(BZ)Ljavacard/security/KeyAgreement;
+					putstatic_a 145;		// reference tapdano/Crypto.keyAgreement
+				L24:	goto L26;
+				L25:	astore_0;
+				L26:	bspush 11;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 146;		// T_CLASSORINTERFACE javacard/security/ECPublicKey
+					putstatic_a 147;		// reference tapdano/Crypto.publicKey
+					getstatic_a 147;		// reference tapdano/Crypto.publicKey
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+				L27:	goto L29;
+				L28:	astore_0;
+				L29:	new 32;		// javacard/security/KeyPair
+					dup;
+					bspush 11;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 146;		// T_CLASSORINTERFACE javacard/security/ECPublicKey
+					bspush 12;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 81;		// T_CLASSORINTERFACE javacard/security/ECPrivateKey
+					invokespecial 33;		// javacard/security/KeyPair.<init>(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V
+					putstatic_a 34;		// reference tapdano/Crypto.keyPair
+					getstatic_a 34;		// reference tapdano/Crypto.keyPair
+					invokevirtual 35;		// getPrivate()Ljavacard/security/PrivateKey;
+					checkcast 0 36;		// T_CLASSORINTERFACE javacard/security/ECKey
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+					getstatic_a 34;		// reference tapdano/Crypto.keyPair
+					invokevirtual 37;		// getPublic()Ljavacard/security/PublicKey;
+					checkcast 0 36;		// T_CLASSORINTERFACE javacard/security/ECKey
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+				L30:	goto L32;
+				L31:	astore_0;
+				L32:	bspush 13;
+					sconst_0;
+					invokestatic 115;		// javacardx/crypto/Cipher.getInstance(BZ)Ljavacardx/crypto/Cipher;
+					putstatic_a 38;		// reference tapdano/Crypto.blobEncryptDecryptAES
+				L33:	goto L35;
+				L34:	astore_0;
+				L35:	return;
+			.exceptionTable {
+				// start_block end_block handler_block catch_type_index
+				L1 L2 L3 63;
+				L4 L5 L6 63;
+				L8 L9 L10 63;
+				L11 L12 L13 63;
+				L15 L16 L17 63;
+				L18 L19 L20 63;
+				L14 L21 L22 63;
+				L23 L24 L25 63;
+				L26 L27 L28 63;
+				L29 L30 L31 63;
+				L32 L33 L34 63;
+			}
+		}
+
+		.method public static initTransientPrivate([BS)V 2 {
+			.stack 4;
+			.locals 0;
+
+				L0:	getstatic_b 87;		// boolean tapdano/Crypto.transientPrivateTransient
+					ifeq L2;
+				L1:	getstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+				L2:	getstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					aload_0;
+					sload_1;
+					bspush 32;
+					invokeinterface 4 81 18;		// javacard/security/ECPrivateKey
+					return;
+		}
+
+		.method public static signTransientPrivate([BS[BS[BS)V 3 {
+			.stack 6;
+			.locals 0;
+
+				L0:	aload_0;
+					sload_1;
+					invokestatic 39;		// tapdano/Crypto.initTransientPrivate([BS)V
+					aload_0;
+					sload_1;
+					bspush 32;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					getstatic_a 118;		// reference tapdano/Crypto.signature
+					getstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					sconst_1;
+					invokevirtual 41;		// init(Ljavacard/security/Key;B)V
+					getstatic_a 118;		// reference tapdano/Crypto.signature
+					aload_2;
+					sload_3;
+					bspush 32;
+					aload 4;
+					sload 5;
+					invokevirtual 42;		// sign([BSS[BS)S
+					pop;
+					getstatic_b 87;		// boolean tapdano/Crypto.transientPrivateTransient
+					ifeq L2;
+				L1:	getstatic_a 82;		// reference tapdano/Crypto.transientPrivate
+					invokeinterface 1 81 0;		// javacard/security/ECPrivateKey
+				L2:	return;
+		}
+
+		.method public static verifyPublic([BS[BS[BS)Z 4 {
+			.stack 9;
+			.locals 1;
+
+				L0:	getstatic_a 147;		// reference tapdano/Crypto.publicKey
+					aload_0;
+					sload_1;
+					bspush 65;
+					invokeinterface 4 146 18;		// javacard/security/ECPublicKey
+					getstatic_a 118;		// reference tapdano/Crypto.signature
+					getstatic_a 147;		// reference tapdano/Crypto.publicKey
+					sconst_2;
+					invokevirtual 41;		// init(Ljavacard/security/Key;B)V
+				L1:	getstatic_a 118;		// reference tapdano/Crypto.signature
+					aload_2;
+					sload_3;
+					bspush 32;
+					aload 4;
+					sload 5;
+					aload 4;
+					sload 5;
+					sconst_1;
+					sadd;
+					baload;
+					sconst_2;
+					sadd;
+					invokevirtual 44;		// verify([BSS[BSS)Z
+				L2:	sreturn;
+				L3:	astore 6;
+					sconst_0;
+					sreturn;
+			.exceptionTable {
+				// start_block end_block handler_block catch_type_index
+				L1 L2 L3 43;
+			}
+		}
+
+		.method public static initCipher(Ljavacard/security/DESKey;Z)V 5 {
+			.stack 6;
+			.locals 0;
+
+			.descriptor	Ljavacard/security/DESKey;	2.10;
+
+				L0:	getstatic_a 116;		// reference tapdano/Crypto.blobEncryptDecrypt
+					aload_0;
+					sload_1;
+					ifeq L2;
+				L1:	sconst_2;
+					goto L3;
+				L2:	sconst_1;
+				L3:	getstatic_a 45;		// reference tapdano/Crypto.IV_ZERO
+					sconst_0;
+					getstatic_a 45;		// reference tapdano/Crypto.IV_ZERO
+					arraylength;
+					invokevirtual 46;		// init(Ljavacard/security/Key;B[BSS)V
+					return;
+		}
+
+		.method public static initCipherAES(Ljavacard/security/AESKey;Z)V 6 {
+			.stack 6;
+			.locals 0;
+
+			.descriptor	Ljavacard/security/AESKey;	2.20;
+
+				L0:	getstatic_a 38;		// reference tapdano/Crypto.blobEncryptDecryptAES
+					aload_0;
+					sload_1;
+					ifeq L2;
+				L1:	sconst_2;
+					goto L3;
+				L2:	sconst_1;
+				L3:	getstatic_a 47;		// reference tapdano/Crypto.IV_ZERO_AES
+					sconst_0;
+					getstatic_a 47;		// reference tapdano/Crypto.IV_ZERO_AES
+					arraylength;
+					invokevirtual 46;		// init(Ljavacard/security/Key;B[BSS)V
+					return;
+		}
+
+		.method public static getRandomByteModulo(S)B 7 {
+			.stack 4;
+			.locals 3;
+
+				L0:	sspush 256;
+					sload_0;
+					srem;
+					sstore_1;
+					sspush 256;
+					sload_1;
+					ssub;
+					sstore_2;
+					sconst_0;
+					sstore_3;
+				L1:	getstatic_a 77;		// reference tapdano/Crypto.random
+					getstatic_a 74;		// reference tapdano/Crypto.scratch
+					sconst_0;
+					sconst_1;
+					invokevirtual 48;		// generateData([BSS)V
+					getstatic_a 74;		// reference tapdano/Crypto.scratch
+					sconst_0;
+					baload;
+					sspush 255;
+					sand;
+					sstore_3;
+					sload_3;
+					sload_2;
+					if_scmpgt L1;
+				L2:	sload_3;
+					sload_0;
+					srem;
+					s2b;
+					sreturn;
+		}
+
+	}
+
+	.class public FIDO2Applet 3 extends 1.3 {		// extends javacard/framework/Applet
+
+		.fields {
+			private 1.6 TapDanoAID 0;		// Ljavacard/framework/AID;
+			private TapDanoShareable tapDano 1;		// Ltapdano/TapDanoShareable;
+		}
+
+		.publicMethodTable 7 {
+			equals(Ljava/lang/Object;)Z;
+			register()V;
+			register([BSB)V;
+			selectingApplet()Z;
+			deselect()V;
+			getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;
+			select()Z;
+			process(Ljavacard/framework/APDU;)V;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.implementedInterfaceInfoTable { 
+			.interface 4.0 { 		// javacardx/apdu/ExtendedLength
+			}
+
+		}
+
+		.method protected <init>()V 0 {
+			.stack 6;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 49;		// javacard/framework/Applet.<init>()V
+					aload_0;
+					new 50;		// javacard/framework/AID
+					dup;
+					getstatic_a 51;		// reference tapdano/Constants.TapDanoAIDBytes
+					sconst_0;
+					getstatic_a 51;		// reference tapdano/Constants.TapDanoAIDBytes
+					arraylength;
+					s2b;
+					invokespecial 52;		// javacard/framework/AID.<init>([BSB)V
+					putfield_a 0;		// reference tapdano/FIDO2Applet.TapDanoAID
+					return;
+		}
+
+		.method public static install([BSB)V 1 {
+			.stack 4;
+			.locals 3;
+
+				L0:	sload_1;
+					sstore_3;
+					aload_0;
+					sload_3;
+					sinc 3 1;
+					baload;
+					sstore 4;
+					sload_3;
+					sstore 5;
+					new 54;		// tapdano/FIDO2Applet
+					dup;
+					invokespecial 55;		// tapdano/FIDO2Applet.<init>()V
+					aload_0;
+					sload 5;
+					sload 4;
+					invokevirtual 56;		// register([BSB)V
+					return;
+		}
+
+		.method public process(Ljavacard/framework/APDU;)V 7 {
+			.stack 5;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	aload_1;
+					invokevirtual 57;		// getBuffer()[B
+					astore_2;
+					aload_0;
+					invokevirtual 58;		// selectingApplet()Z
+					ifeq L2;
+				L1:	aload_2;
+					sconst_0;
+					bspush 85;
+					bastore;
+					aload_2;
+					sconst_1;
+					bspush 50;
+					bastore;
+					aload_2;
+					sconst_2;
+					bspush 70;
+					bastore;
+					aload_2;
+					sconst_3;
+					bspush 95;
+					bastore;
+					aload_2;
+					sconst_4;
+					bspush 86;
+					bastore;
+					aload_2;
+					sconst_5;
+					bspush 50;
+					bastore;
+					aload_1;
+					sconst_0;
+					bspush 6;
+					invokevirtual 59;		// setOutgoingAndSend(SS)V
+					return;
+				L2:	aload_2;
+					sconst_4;
+					baload;
+					ifne L6;
+				L3:	aload_2;
+					sconst_5;
+					baload;
+					ifne L5;
+				L4:	aload_2;
+					bspush 6;
+					baload;
+					ifeq L6;
+				L5:	sconst_1;
+					goto L7;
+				L6:	sconst_0;
+				L7:	sstore_3;
+					aload_2;
+					sconst_0;
+					baload;
+					bspush -128;
+					if_scmpne L9;
+				L8:	sspush 27904;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L9:	aload_2;
+					sconst_0;
+					baload;
+					ifne L13;
+				L10:	aload_2;
+					sconst_1;
+					baload;
+					sconst_2;
+					if_scmpne L13;
+				L11:	aload_2;
+					sconst_2;
+					baload;
+					bspush 7;
+					if_scmpne L13;
+				L12:	sspush 27013;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L13:	aload_2;
+					sconst_0;
+					baload;
+					ifne L21;
+				L14:	aload_2;
+					sconst_1;
+					baload;
+					sconst_2;
+					if_scmpne L21;
+				L15:	aload_2;
+					sconst_2;
+					baload;
+					sconst_3;
+					if_scmpne L21;
+				L16:	aload_0;
+					getfield_a_this 0;		// reference tapdano/FIDO2Applet.TapDanoAID
+					sconst_0;
+					invokestatic 61;		// javacard/framework/JCSystem.getAppletShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;
+					checkcast 0 62;		// T_CLASSORINTERFACE tapdano/TapDanoShareable
+					putfield_a 1;		// reference tapdano/FIDO2Applet.tapDano
+					getfield_a_this 1;		// reference tapdano/FIDO2Applet.tapDano
+					ifnull L21;
+				L17:	getfield_a_this 1;		// reference tapdano/FIDO2Applet.tapDano
+					sconst_2;
+					aload_2;
+					sload_3;
+					ifeq L19;
+				L18:	bspush 7;
+					goto L20;
+				L19:	sconst_5;
+				L20:	bspush 65;
+					sadd;
+					s2b;
+					invokeinterface 4 62 0;		// tapdano/TapDanoShareable
+					sstore 4;
+					aload_1;
+					sconst_0;
+					sload 4;
+					invokevirtual 59;		// setOutgoingAndSend(SS)V
+					return;
+				L21:	sspush 28416;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+		}
+
+	}
+
+	.class public final NDEFApplet 4 extends 1.3 {		// extends javacard/framework/Applet
+
+		.fields {
+			private short[] vars 0;		// [S
+			private final byte[] capsFile 1;		// [B
+			private final byte[] dataFile 2;		// [B
+			private 1.6 TapDanoAID 3;		// Ljavacard/framework/AID;
+			private TapDanoShareable tapDano 4;		// Ltapdano/TapDanoShareable;
+			private final byte dataReadAccess 5;		// B
+			private final byte dataWriteAccess 6;		// B
+			private boolean isConnected 7;		// Z
+			private static final byte INS_SELECT = -92;		// B
+			private static final byte INS_READ_BINARY = -80;		// B
+			private static final byte INS_UPDATE_BINARY = -42;		// B
+			private static final short FILEID_NONE = 0;		// S
+			private static final short FILEID_NDEF_CAPABILITIES = -7933;		// S
+			private static final short FILEID_NDEF_DATA = -7932;		// S
+			private static final byte FILE_ACCESS_OPEN = 0;		// B
+			private static final byte FILE_ACCESS_NONE = -1;		// B
+			private static final byte FILE_ACCESS_PROP_CONTACT_ONLY = -16;		// B
+			private static final byte FILE_ACCESS_PROP_WRITE_ONCE = -15;		// B
+			private static final byte SELECT_P1_BY_FILEID = 0;		// B
+			private static final byte SELECT_P2_FIRST_OR_ONLY = 12;		// B
+			private static final byte NDEF_MAPPING_VERSION = 32;		// B
+			private static final byte AD_TAG_NDEF_DATA_INITIAL = -128;		// B
+			private static final byte AD_TAG_NDEF_DATA_ACCESS = -127;		// B
+			private static final byte AD_TAG_NDEF_DATA_SIZE = -126;		// B
+			private static final byte CC_LEN_HEADER = 7;		// B
+			private static final byte CC_OFF_NDEF_FILE_CONTROL = 7;		// B
+			private static final byte CC_TAG_NDEF_FILE_CONTROL = 4;		// B
+			private static final byte CC_LEN_NDEF_FILE_CONTROL = 6;		// B
+			private static final byte FC_OFF_FILE_ID = 0;		// B
+			private static final byte FC_OFF_SIZE = 2;		// B
+			private static final byte FC_OFF_READ_ACCESS = 4;		// B
+			private static final byte FC_OFF_WRITE_ACCESS = 5;		// B
+			private static final boolean FEATURE_WRITING = 1;		// Z
+			private static final boolean FEATURE_ADVANCED_ACCESS_CONTROL = 1;		// Z
+			private static final short NDEF_MAX_READ = 128;		// S
+			private static final short NDEF_MAX_WRITE = 128;		// S
+			private static final short DEFAULT_NDEF_DATA_SIZE = 512;		// S
+			private static final byte DEFAULT_NDEF_READ_ACCESS = 0;		// B
+			private static final byte DEFAULT_NDEF_WRITE_ACCESS = 0;		// B
+			private static final byte VAR_SELECTED_FILE = 0;		// B
+			private static final short NUM_VARS = 1;		// S
+		}
+
+		.publicMethodTable 7 {
+			equals(Ljava/lang/Object;)Z;
+			register()V;
+			register([BSB)V;
+			selectingApplet()Z;
+			deselect()V;
+			getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;
+			select()Z;
+			process(Ljavacard/framework/APDU;)V;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public final process(Ljavacard/framework/APDU;)V 7 {
+			.stack 3;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	aload_1;
+					invokevirtual 57;		// getBuffer()[B
+					astore_2;
+					aload_2;
+					sconst_1;
+					baload;
+					sstore_3;
+					aload_0;
+					invokevirtual 64;		// selectingApplet()Z
+					ifeq L2;
+				L1:	getfield_a_this 2;		// reference tapdano/NDEFApplet.vars
+					sconst_0;
+					sconst_0;
+					sastore;
+					return;
+				L2:	aload_1;
+					invokevirtual 66;		// isSecureMessagingCLA()Z
+					ifeq L4;
+				L3:	sspush 26754;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_1;
+					invokevirtual 67;		// isISOInterindustryCLA()Z
+					ifeq L12;
+				L5:	sload_3;
+					bspush -92;
+					if_scmpne L7;
+				L6:	aload_0;
+					aload_1;
+					invokespecial 68;		// tapdano/NDEFApplet.processSelect(Ljavacard/framework/APDU;)V
+					goto L13;
+				L7:	sload_3;
+					bspush -80;
+					if_scmpne L9;
+				L8:	aload_0;
+					aload_1;
+					invokespecial 69;		// tapdano/NDEFApplet.processReadBinary(Ljavacard/framework/APDU;)V
+					goto L13;
+				L9:	sload_3;
+					bspush -42;
+					if_scmpne L11;
+				L10:	aload_0;
+					aload_1;
+					invokespecial 70;		// tapdano/NDEFApplet.processUpdateBinary(Ljavacard/framework/APDU;)V
+					goto L13;
+				L11:	sspush 27904;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+					goto L13;
+				L12:	sspush 28160;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	return;
+		}
+
+		.method public static install([BSB)V 0 {
+			.stack 4;
+			.locals 3;
+
+				L0:	sload_1;
+					sstore_3;
+					aload_0;
+					sload_3;
+					sinc 3 1;
+					baload;
+					sstore 4;
+					sload_3;
+					sstore 5;
+					new 71;		// tapdano/NDEFApplet
+					dup;
+					invokespecial 72;		// tapdano/NDEFApplet.<init>()V
+					aload_0;
+					sload 5;
+					sload 4;
+					invokevirtual 73;		// register([BSB)V
+					return;
+		}
+
+		.method protected <init>()V 1 {
+			.stack 6;
+			.locals 6;
+
+				L0:	aload_0;
+					invokespecial 49;		// javacard/framework/Applet.<init>()V
+					aload_0;
+					sconst_0;
+					putfield_b 3;		// boolean tapdano/NDEFApplet.isConnected
+					sspush 512;
+					sstore_1;
+					sconst_0;
+					sstore_2;
+					sconst_0;
+					sstore_3;
+					aconst_null;
+					astore 4;
+					sconst_0;
+					sstore 5;
+					sconst_0;
+					sstore 6;
+					aload_0;
+					sconst_1;
+					sconst_2;
+					invokestatic 75;		// javacard/framework/JCSystem.makeTransientShortArray(SB)[S
+					putfield_a 2;		// reference tapdano/NDEFApplet.vars
+					aload_0;
+					sload_2;
+					putfield_b 4;		// byte tapdano/NDEFApplet.dataReadAccess
+					aload_0;
+					sload_3;
+					putfield_b 5;		// byte tapdano/NDEFApplet.dataWriteAccess
+					aload_0;
+					aload_0;
+					sload_1;
+					sload_2;
+					sload_3;
+					invokespecial 78;		// tapdano/NDEFApplet.makeCaps(SBB)[B
+					putfield_a 6;		// reference tapdano/NDEFApplet.capsFile
+					aload_0;
+					aload_0;
+					sload_1;
+					aload 4;
+					sload 5;
+					sload 6;
+					invokespecial 80;		// tapdano/NDEFApplet.makeData(S[BSS)[B
+					putfield_a 7;		// reference tapdano/NDEFApplet.dataFile
+					aload_0;
+					new 50;		// javacard/framework/AID
+					dup;
+					getstatic_a 51;		// reference tapdano/Constants.TapDanoAIDBytes
+					sconst_0;
+					getstatic_a 51;		// reference tapdano/Constants.TapDanoAIDBytes
+					arraylength;
+					s2b;
+					invokespecial 52;		// javacard/framework/AID.<init>([BSB)V
+					putfield_a 8;		// reference tapdano/NDEFApplet.TapDanoAID
+					return;
+		}
+
+		.method private makeCaps(SBB)[B {
+			.stack 4;
+			.locals 3;
+
+				L0:	bspush 15;
+					sstore 4;
+					sload 4;
+					newarray 11;
+					astore 5;
+					sconst_0;
+					sstore 6;
+					aload 5;
+					sload 6;
+					sload 4;
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					sstore 6;
+					aload 5;
+					sload 6;
+					sinc 6 1;
+					bspush 32;
+					bastore;
+					aload 5;
+					sload 6;
+					sspush 128;
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					sstore 6;
+					aload 5;
+					sload 6;
+					sspush 128;
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					sstore 6;
+					aload 5;
+					sload 6;
+					sinc 6 1;
+					sconst_4;
+					bastore;
+					aload 5;
+					sload 6;
+					sinc 6 1;
+					bspush 6;
+					bastore;
+					aload 5;
+					sload 6;
+					sspush -7932;
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					sstore 6;
+					aload 5;
+					sload 6;
+					sload_1;
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					sstore 6;
+					aload 5;
+					sload 6;
+					sinc 6 1;
+					sload_2;
+					bastore;
+					aload 5;
+					sload 6;
+					sinc 6 1;
+					sload_3;
+					bastore;
+					sload 6;
+					sload 4;
+					if_scmpeq L2;
+				L1:	sspush 28416;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload 5;
+					areturn;
+		}
+
+		.method private makeData(S[BSS)[B {
+			.stack 1;
+			.locals 1;
+
+				L0:	sload_1;
+					newarray 11;
+					astore 5;
+					aload 5;
+					areturn;
+		}
+
+		.method private fixCaps([BSS)V {
+			.stack 5;
+			.locals 3;
+
+				L0:	sload_2;
+					bspush 7;
+					sadd;
+					sconst_2;
+					sadd;
+					sstore 4;
+					sload 4;
+					sconst_4;
+					sadd;
+					sstore 5;
+					sload 4;
+					sconst_5;
+					sadd;
+					sstore 6;
+					aload_1;
+					sload 5;
+					aload_0;
+					getfield_a_this 7;		// reference tapdano/NDEFApplet.dataFile
+					getfield_b_this 4;		// byte tapdano/NDEFApplet.dataReadAccess
+					invokespecial 84;		// tapdano/NDEFApplet.fixAccess([BB)B
+					bastore;
+					aload_1;
+					sload 6;
+					aload_0;
+					getfield_a_this 7;		// reference tapdano/NDEFApplet.dataFile
+					getfield_b_this 5;		// byte tapdano/NDEFApplet.dataWriteAccess
+					invokespecial 84;		// tapdano/NDEFApplet.fixAccess([BB)B
+					bastore;
+					return;
+		}
+
+		.method private processSelect(Ljavacard/framework/APDU;)V {
+			.stack 3;
+			.locals 5;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	aload_1;
+					invokevirtual 57;		// getBuffer()[B
+					astore_2;
+					aload_2;
+					sconst_2;
+					baload;
+					sstore_3;
+					aload_2;
+					sconst_3;
+					baload;
+					sstore 4;
+					sload_3;
+					ifne L2;
+				L1:	sload 4;
+					bspush 12;
+					if_scmpeq L3;
+				L2:	sspush 27265;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	aload_1;
+					invokevirtual 85;		// setIncomingAndReceive()S
+					sstore 5;
+					sload 5;
+					sconst_2;
+					if_scmpeq L5;
+				L4:	sspush 26368;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L5:	aload_2;
+					sconst_5;
+					invokestatic 86;		// javacard/framework/Util.getShort([BS)S
+					sstore 6;
+					sload 6;
+					sspush -7933;
+					if_scmpeq L7;
+				L6:	sload 6;
+					sspush -7932;
+					if_scmpne L8;
+				L7:	getfield_a_this 2;		// reference tapdano/NDEFApplet.vars
+					sconst_0;
+					sload 6;
+					sastore;
+					goto L9;
+				L8:	sspush 27266;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	return;
+		}
+
+		.method private processReadBinary(Ljavacard/framework/APDU;)V {
+			.stack 4;
+			.locals 7;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	aload_1;
+					invokevirtual 57;		// getBuffer()[B
+					astore_2;
+					aload_2;
+					sconst_2;
+					invokestatic 86;		// javacard/framework/Util.getShort([BS)S
+					sstore_3;
+					aconst_null;
+					astore 5;
+					getfield_a_this 2;		// reference tapdano/NDEFApplet.vars
+					sconst_0;
+					saload;
+					sspush -7932;
+					if_scmpne L2;
+				L1:	sconst_1;
+					goto L3;
+				L2:	sconst_0;
+				L3:	sstore 6;
+					sload 6;
+					ifeq L7;
+				L4:	getfield_a_this 7;		// reference tapdano/NDEFApplet.dataFile
+					astore 5;
+					getfield_b_this 3;		// boolean tapdano/NDEFApplet.isConnected
+					ifne L6;
+				L5:	aload_0;
+					getfield_a_this 8;		// reference tapdano/NDEFApplet.TapDanoAID
+					sconst_0;
+					invokestatic 61;		// javacard/framework/JCSystem.getAppletShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;
+					checkcast 0 62;		// T_CLASSORINTERFACE tapdano/TapDanoShareable
+					putfield_a 9;		// reference tapdano/NDEFApplet.tapDano
+					aload_0;
+					sconst_1;
+					putfield_b 3;		// boolean tapdano/NDEFApplet.isConnected
+				L6:	getfield_a_this 9;		// reference tapdano/NDEFApplet.tapDano
+					sconst_3;
+					aload 5;
+					sconst_5;
+					invokeinterface 4 62 0;		// tapdano/TapDanoShareable
+					sstore 4;
+					goto L8;
+				L7:	aload_0;
+					getfield_a_this 2;		// reference tapdano/NDEFApplet.vars
+					sconst_0;
+					saload;
+					invokespecial 88;		// tapdano/NDEFApplet.accessFileForRead(S)[B
+					astore 5;
+					aload_0;
+					aload_2;
+					sconst_0;
+					aload 5;
+					arraylength;
+					invokespecial 89;		// tapdano/NDEFApplet.fixCaps([BSS)V
+					aload 5;
+					arraylength;
+					sstore 4;
+				L8:	aload_1;
+					invokevirtual 90;		// setOutgoingNoChaining()S
+					sstore 7;
+					sload 7;
+					sspush 128;
+					if_scmple L10;
+				L9:	sspush 128;
+					sstore 7;
+				L10:	sload_3;
+					iflt L12;
+				L11:	sload_3;
+					sload 4;
+					if_scmplt L13;
+				L12:	sspush 27392;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	sload_3;
+					sload 7;
+					sadd;
+					sstore 8;
+					sload 8;
+					ifge L15;
+				L14:	sspush 26368;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	sload 8;
+					sload 4;
+					if_scmplt L17;
+				L16:	sload 4;
+					sload_3;
+					ssub;
+					sstore 7;
+				L17:	aload_1;
+					sload 7;
+					invokevirtual 91;		// setOutgoingLength(S)V
+					aload_1;
+					aload 5;
+					sload_3;
+					sload 7;
+					invokevirtual 92;		// sendBytesLong([BSS)V
+					return;
+		}
+
+		.method private processUpdateBinary(Ljavacard/framework/APDU;)V {
+			.stack 4;
+			.locals 1;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	aload_1;
+					invokevirtual 57;		// getBuffer()[B
+					astore_2;
+					getfield_b_this 3;		// boolean tapdano/NDEFApplet.isConnected
+					ifne L2;
+				L1:	aload_0;
+					getfield_a_this 8;		// reference tapdano/NDEFApplet.TapDanoAID
+					sconst_0;
+					invokestatic 61;		// javacard/framework/JCSystem.getAppletShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;
+					checkcast 0 62;		// T_CLASSORINTERFACE tapdano/TapDanoShareable
+					putfield_a 9;		// reference tapdano/NDEFApplet.tapDano
+					aload_0;
+					sconst_1;
+					putfield_b 3;		// boolean tapdano/NDEFApplet.isConnected
+				L2:	getfield_a_this 9;		// reference tapdano/NDEFApplet.tapDano
+					sconst_1;
+					aload_2;
+					bspush 8;
+					invokeinterface 4 62 0;		// tapdano/TapDanoShareable
+					pop;
+					return;
+		}
+
+		.method private checkAccess([BB)Z {
+			.stack 2;
+			.locals 2;
+
+				L0:	invokestatic 93;		// javacard/framework/APDU.getProtocol()B
+					sstore_3;
+					sload_3;
+					bspush -16;
+					sand;
+					sstore 4;
+					sload_2;
+					slookupswitch L11 4 -16 L2 -15 L6 -1 L11 0 L1;
+				L1:	sconst_1;
+					sreturn;
+				L2:	sload 4;
+					ifne L4;
+				L3:	sconst_1;
+					goto L5;
+				L4:	sconst_0;
+				L5:	sreturn;
+				L6:	aload_1;
+					sconst_0;
+					baload;
+					ifne L9;
+				L7:	aload_1;
+					sconst_1;
+					baload;
+					ifne L9;
+				L8:	sconst_1;
+					goto L10;
+				L9:	sconst_0;
+				L10:	sreturn;
+				L11:	sconst_0;
+					sreturn;
+		}
+
+		.method private fixAccess([BB)B {
+			.stack 3;
+			.locals 0;
+
+				L0:	sload_2;
+					slookupswitch L1 2 -16 L2 -15 L2;
+				L1:	sload_2;
+					sreturn;
+				L2:	aload_0;
+					aload_1;
+					sload_2;
+					invokespecial 94;		// tapdano/NDEFApplet.checkAccess([BB)Z
+					ifeq L4;
+				L3:	sconst_0;
+					goto L5;
+				L4:	sconst_m1;
+				L5:	sreturn;
+		}
+
+		.method private accessFileForRead(S)[B {
+			.stack 3;
+			.locals 2;
+
+				L0:	aconst_null;
+					astore_2;
+					sconst_m1;
+					sstore_3;
+					sload_1;
+					sspush -7933;
+					if_scmpne L2;
+				L1:	getfield_a_this 6;		// reference tapdano/NDEFApplet.capsFile
+					astore_2;
+					sconst_0;
+					sstore_3;
+				L2:	sload_1;
+					sspush -7932;
+					if_scmpne L4;
+				L3:	getfield_a_this 7;		// reference tapdano/NDEFApplet.dataFile
+					astore_2;
+					getfield_b_this 4;		// byte tapdano/NDEFApplet.dataReadAccess
+					sstore_3;
+				L4:	aload_2;
+					ifnonnull L6;
+				L5:	sspush 27013;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload_0;
+					aload_2;
+					sload_3;
+					invokespecial 94;		// tapdano/NDEFApplet.checkAccess([BB)Z
+					ifne L8;
+				L7:	sspush 27010;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_2;
+					areturn;
+		}
+
+	}
+
+	.class public SHA512 5 extends 0.0 {		// extends java/lang/Object
+
+		.fields {
+			private static final short[] primeSqrt = {17034,12184,-10456,-20958,28983,17553,9199,26061,-19008,-1073,-5043,15151,-5707,-9307,-32375,-9284,14678,-15781,-3256,-19144,23025,4593,-18939,-12263,-28097,-32092,-20711,20379,-21732,24277,-9619,-32488,-10233,-21864,-23805,578,4739,23297,17776,28606,9265,-31298,20196,-19828,21772,32195,-10753,-19230,29374,23924,-3461,-30353,-32546,-19970,15126,-26959,-25636,1703,9671,4661,-15973,-3724,-12439,9876,-7013,27073,-24847,19154,-4162,18310,14415,9699,4033,-25146,-29812,-10827,9228,-24116,30636,-25499,11753,11375,22827,629,19060,-31574,28326,-7037,23728,-22052,-17087,-1068,30457,-30502,-31983,21429,-26562,20818,-4506,-8277,-22479,-14739,11700,12816,-20477,10184,-26373,8511,-16551,32711,-16657,3812,-14624,3059,15784,-28734,-10841,-28345,-27894,-22747,1738,25425,-8189,-32145,5161,10599,2574,28272,10167,2693,18130,12284,11803,8504,23590,-14042,19756,28156,23236,10989,21304,3347,-25195,-19489,25866,29524,-29777,25566,30314,2747,15479,-19800,-32318,-14034,18413,-20762,-28046,11397,5250,13627,-23873,-5983,19697,868,-22502,26187,-17342,12289,-15797,-29840,-12040,-26735,-14484,20899,1620,-16848,-11886,-6119,-10513,21016,-10599,1572,21861,-22256,-3058,13701,22385,8234,4202,-24464,12987,-11848,6564,-16106,-18222,-12088,7735,27656,20801,-21677,10056,30540,-8306,-5223,13488,-17227,-7781,18600,14620,3251,-14903,23139,20184,-21942,-7359,-30005,23452,-13745,30563,-7309,26670,28659,-10574,-18269,29839,-32018,24047,-19716,30885,25455,17175,12128,-31544,30740,-24080,-21646,-29497,520,6756,14828,-28482,-6,9059,7720,-23472,27883,-8574,-16919,-16647,-23561,-19770,30997,-14735,30962,-7310,21291,-13785,16078,-5594,24988,-11898,-18233,8640,-15865,-5414,32214,-12832,-5346,-2691,20351,-4498,-11912,1776,26538,29207,28602,2659,32197,-23864,-26458,4415,-26620,-16647,3502,7025,2869,4892,18203,10459,30709,8964,32132,13002,-21637,16583,9363,15518,-16886,5577,-16708,17181,26564,-25584,3404,19653,-11074,-13506,17078,22911,10652,-923,32298,24523,28587,15062,-1300,27716,6540,19015,22551};		// [S
+			private static final short[] HINIT = {27145,-6553,-3140,-14072,-17561,-20859,-31542,-22725,15470,-3214,-364,-2005,-23217,-2758,24349,14065,20750,21119,-21018,-32047,-25851,26764,11070,27679,8067,-9813,-1215,-17045,23520,-13031,4990,8569};		// [S
+			private static short[] working;		// [S
+			private static short[] blk;		// [S
+			private static final short BLOCK_SIZE = 128;		// S
+			private static final short CNT = 0;		// S
+			private static final short BLEN = 1;		// S
+			private static final short H0 = 2;		// S
+			private static final short H1 = 6;		// S
+			private static final short H2 = 10;		// S
+			private static final short H3 = 14;		// S
+			private static final short H4 = 18;		// S
+			private static final short H5 = 22;		// S
+			private static final short H6 = 26;		// S
+			private static final short H7 = 30;		// S
+			private static final short BLK = 34;		// S
+		}
+
+		.publicMethodTable 1 {
+			equals(Ljava/lang/Object;)Z;
+			uninit()V;
+			getAlgorithm()B;
+			getLength()B;
+			reset()V;
+			update([BSS)V;
+			doFinal([BSS[BS)S;
+			init()V;
+		}
+
+		.packageMethodTable 0 {
+			zeroFillBlk()V;
+		}
+
+		.method public <init>()V 0 {
+			.stack 2;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 53;		// java/lang/Object.<init>()V
+					bspush 34;
+					sconst_2;
+					invokestatic 75;		// javacard/framework/JCSystem.makeTransientShortArray(SB)[S
+					putstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 64;
+					sconst_2;
+					invokestatic 75;		// javacard/framework/JCSystem.makeTransientShortArray(SB)[S
+					putstatic_a 96;		// reference tapdano/SHA512.blk
+					aload_0;
+					invokevirtual 97;		// init()V
+					return;
+		}
+
+		.method public uninit()V 1 {
+			.stack 1;
+			.locals 0;
+
+				L0:	aconst_null;
+					putstatic_a 95;		// reference tapdano/SHA512.working
+					aconst_null;
+					putstatic_a 96;		// reference tapdano/SHA512.blk
+					return;
+		}
+
+		.method public getAlgorithm()B 2 {
+			.stack 1;
+			.locals 0;
+
+				L0:	bspush 97;
+					sreturn;
+		}
+
+		.method public getLength()B 3 {
+			.stack 1;
+			.locals 0;
+
+				L0:	bspush 64;
+					sreturn;
+		}
+
+		.method public reset()V 4 {
+			.stack 1;
+			.locals 0;
+
+				L0:	aload_0;
+					invokevirtual 97;		// init()V
+					return;
+		}
+
+		.method public update([BSS)V 5 {
+			.stack 4;
+			.locals 3;
+
+				L0:	getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_1;
+					saload;
+					sstore 4;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_0;
+					saload;
+					sstore 5;
+					sload 4;
+					sload_3;
+					sadd;
+					sspush 128;
+					if_scmplt L2;
+				L1:	sspush 128;
+					sload 4;
+					ssub;
+					sstore 6;
+					aload_0;
+					aload_1;
+					sload_2;
+					sload 6;
+					invokespecial 98;		// tapdano/SHA512.load([BSS)V
+					invokestatic 99;		// tapdano/SHA512.hashBlock()V
+					sload_2;
+					sload 6;
+					sadd;
+					sstore_2;
+					sload_3;
+					sload 6;
+					ssub;
+					sstore_3;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_1;
+					sconst_0;
+					sastore;
+					sinc 5 1;
+				L2:	sload_3;
+					sspush 128;
+					if_scmplt L4;
+				L3:	aload_0;
+					aload_1;
+					sload_2;
+					sspush 128;
+					invokespecial 98;		// tapdano/SHA512.load([BSS)V
+					invokestatic 99;		// tapdano/SHA512.hashBlock()V
+					sinc 5 1;
+					sload_2;
+					sspush 128;
+					sadd;
+					sstore_2;
+					sload_3;
+					sspush 128;
+					ssub;
+					sstore_3;
+					goto L2;
+				L4:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					invokespecial 98;		// tapdano/SHA512.load([BSS)V
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_1;
+					sload_3;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_0;
+					sload 5;
+					sastore;
+					return;
+		}
+
+		.method public doFinal([BSS[BS)S 6 {
+			.stack 5;
+			.locals 6;
+
+				L0:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					invokevirtual 100;		// update([BSS)V
+					aload_0;
+					invokevirtual 101;		// zeroFillBlk()V
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_0;
+					saload;
+					sstore 6;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_1;
+					saload;
+					sstore 7;
+					sload 6;
+					bspush 6;
+					sshr;
+					sstore 8;
+					sload 6;
+					bspush 10;
+					sshl;
+					sload 7;
+					sconst_3;
+					sshl;
+					sadd;
+					sstore 9;
+					sload 7;
+					sconst_1;
+					sshr;
+					sstore 10;
+					sload 7;
+					sconst_1;
+					sand;
+					ifne L2;
+				L1:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 10;
+					sspush -32768;
+					sastore;
+					goto L3;
+				L2:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 10;
+					dup2;
+					saload;
+					sspush 128;
+					sor;
+					sastore;
+				L3:	sinc 7 1;
+					sspush 128;
+					sload 7;
+					ssub;
+					bspush 8;
+					if_scmpge L5;
+				L4:	invokestatic 99;		// tapdano/SHA512.hashBlock()V
+					aload_0;
+					invokevirtual 101;		// zeroFillBlk()V
+				L5:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					bspush 62;
+					sload 8;
+					sastore;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					bspush 63;
+					sload 9;
+					sastore;
+					invokestatic 99;		// tapdano/SHA512.hashBlock()V
+					sconst_0;
+					sstore 11;
+				L6:	sload 11;
+					bspush 32;
+					if_scmpge L8;
+				L7:	aload 4;
+					sload 5;
+					sconst_2;
+					sload 11;
+					smul;
+					sadd;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_2;
+					sload 11;
+					sadd;
+					saload;
+					bspush 8;
+					sshr;
+					s2b;
+					bastore;
+					aload 4;
+					sload 5;
+					sconst_2;
+					sload 11;
+					smul;
+					sadd;
+					sconst_1;
+					sadd;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_2;
+					sload 11;
+					sadd;
+					saload;
+					sspush 255;
+					sand;
+					s2b;
+					bastore;
+					sinc 11 1;
+					goto L6;
+				L8:	aload_0;
+					invokevirtual 97;		// init()V
+					aload_0;
+					invokevirtual 102;		// getLength()B
+					sreturn;
+		}
+
+		.method protected init()V 7 {
+			.stack 4;
+			.locals 2;
+
+				L0:	getstatic_a 95;		// reference tapdano/SHA512.working
+					arraylength;
+					sstore_1;
+				L1:	sload_1;
+					ifeq L3;
+				L2:	sinc 1 -1;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sload_1;
+					sconst_0;
+					sastore;
+					goto L1;
+				L3:	sconst_0;
+					sstore_2;
+				L4:	sload_2;
+					bspush 32;
+					if_scmpge L6;
+				L5:	getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_2;
+					sload_2;
+					sadd;
+					getstatic_a 103;		// reference tapdano/SHA512.HINIT
+					sload_2;
+					saload;
+					sastore;
+					sinc 2 1;
+					goto L4;
+				L6:	return;
+		}
+
+		.method private load([BSS)V {
+			.stack 6;
+			.locals 2;
+
+				L0:	getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_1;
+					saload;
+					sstore 4;
+					sload 4;
+					sconst_1;
+					sshr;
+					sstore 5;
+					sload_3;
+					ifne L2;
+				L1:	return;
+				L2:	sload 4;
+					sconst_1;
+					sand;
+					sconst_1;
+					if_scmpne L4;
+				L3:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 5;
+					dup2;
+					saload;
+					aload_1;
+					sload_2;
+					baload;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					sinc 2 1;
+					sinc 3 -1;
+					sinc 5 1;
+				L4:	sload_3;
+					sconst_1;
+					if_scmple L6;
+				L5:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 5;
+					aload_1;
+					sload_2;
+					baload;
+					bspush 8;
+					sshl;
+					aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					baload;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					sinc 2 2;
+					sinc 3 -2;
+					sinc 5 1;
+					goto L4;
+				L6:	sload_3;
+					ifle L8;
+				L7:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 5;
+					aload_1;
+					sload_2;
+					baload;
+					bspush 8;
+					sshl;
+					sastore;
+				L8:	return;
+		}
+
+		.method  zeroFillBlk()V 128 {
+			.stack 3;
+			.locals 2;
+
+				L0:	getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_1;
+					saload;
+					sstore_1;
+					sload_1;
+					sconst_1;
+					sand;
+					sconst_1;
+					if_scmpne L2;
+				L1:	sinc 1 1;
+				L2:	sload_1;
+					sconst_1;
+					sshr;
+					sstore_2;
+				L3:	sload_2;
+					bspush 64;
+					if_scmpge L5;
+				L4:	getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload_2;
+					sconst_0;
+					sastore;
+					sinc 2 1;
+					goto L3;
+				L5:	return;
+		}
+
+		.method protected static hashBlock()V 1 {
+			.stack 5;
+			.locals 65;
+
+				L0:	sconst_0;
+					sstore 56;
+					sconst_0;
+					sstore 57;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_2;
+					saload;
+					sstore_0;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_3;
+					saload;
+					sstore_1;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_4;
+					saload;
+					sstore_2;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_5;
+					saload;
+					sstore_3;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 6;
+					saload;
+					sstore 4;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 7;
+					saload;
+					sstore 5;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 8;
+					saload;
+					sstore 6;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 9;
+					saload;
+					sstore 7;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 10;
+					saload;
+					sstore 8;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 11;
+					saload;
+					sstore 9;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 12;
+					saload;
+					sstore 10;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 13;
+					saload;
+					sstore 11;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 14;
+					saload;
+					sstore 12;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 15;
+					saload;
+					sstore 13;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 16;
+					saload;
+					sstore 14;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 17;
+					saload;
+					sstore 15;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 18;
+					saload;
+					sstore 16;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 19;
+					saload;
+					sstore 17;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 20;
+					saload;
+					sstore 18;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 21;
+					saload;
+					sstore 19;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 22;
+					saload;
+					sstore 20;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 23;
+					saload;
+					sstore 21;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 24;
+					saload;
+					sstore 22;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 25;
+					saload;
+					sstore 23;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 26;
+					saload;
+					sstore 24;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 27;
+					saload;
+					sstore 25;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 28;
+					saload;
+					sstore 26;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 29;
+					saload;
+					sstore 27;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 30;
+					saload;
+					sstore 28;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 31;
+					saload;
+					sstore 29;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 32;
+					saload;
+					sstore 30;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 33;
+					saload;
+					sstore 31;
+					sconst_0;
+					sstore 64;
+				L1:	sload 64;
+					bspush 80;
+					if_scmpge_w L5;
+				L2:	sload 64;
+					bspush 16;
+					if_scmplt_w L4;
+				L3:	sconst_4;
+					sload 64;
+					sconst_2;
+					ssub;
+					bspush 15;
+					sand;
+					smul;
+					sstore 63;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					saload;
+					sstore 36;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_1;
+					sadd;
+					saload;
+					sstore 37;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_2;
+					sadd;
+					saload;
+					sstore 38;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_3;
+					sadd;
+					saload;
+					sstore 39;
+					sload 39;
+					sconst_3;
+					sushr;
+					sspush 8191;
+					sand;
+					sload 38;
+					bspush 13;
+					sshl;
+					sor;
+					sstore 40;
+					sload 36;
+					sconst_3;
+					sushr;
+					sspush 8191;
+					sand;
+					sload 39;
+					bspush 13;
+					sshl;
+					sor;
+					sstore 41;
+					sload 37;
+					sconst_3;
+					sushr;
+					sspush 8191;
+					sand;
+					sload 36;
+					bspush 13;
+					sshl;
+					sor;
+					sstore 42;
+					sload 38;
+					sconst_3;
+					sushr;
+					sspush 8191;
+					sand;
+					sload 37;
+					bspush 13;
+					sshl;
+					sor;
+					sstore 43;
+					sload 37;
+					bspush 13;
+					sushr;
+					bspush 7;
+					sand;
+					sload 36;
+					sconst_3;
+					sshl;
+					sor;
+					sstore 44;
+					sload 38;
+					bspush 13;
+					sushr;
+					bspush 7;
+					sand;
+					sload 37;
+					sconst_3;
+					sshl;
+					sor;
+					sstore 45;
+					sload 39;
+					bspush 13;
+					sushr;
+					bspush 7;
+					sand;
+					sload 38;
+					sconst_3;
+					sshl;
+					sor;
+					sstore 46;
+					sload 36;
+					bspush 13;
+					sushr;
+					bspush 7;
+					sand;
+					sload 39;
+					sconst_3;
+					sshl;
+					sor;
+					sstore 47;
+					sload 36;
+					bspush 6;
+					sushr;
+					sspush 1023;
+					sand;
+					sstore 48;
+					sload 37;
+					bspush 6;
+					sushr;
+					sspush 1023;
+					sand;
+					sload 36;
+					bspush 10;
+					sshl;
+					sor;
+					sstore 49;
+					sload 38;
+					bspush 6;
+					sushr;
+					sspush 1023;
+					sand;
+					sload 37;
+					bspush 10;
+					sshl;
+					sor;
+					sstore 50;
+					sload 39;
+					bspush 6;
+					sushr;
+					sspush 1023;
+					sand;
+					sload 38;
+					bspush 10;
+					sshl;
+					sor;
+					sstore 51;
+					sload 40;
+					sload 44;
+					sxor;
+					sload 48;
+					sxor;
+					sstore 36;
+					sload 41;
+					sload 45;
+					sxor;
+					sload 49;
+					sxor;
+					sstore 37;
+					sload 42;
+					sload 46;
+					sxor;
+					sload 50;
+					sxor;
+					sstore 38;
+					sload 43;
+					sload 47;
+					sxor;
+					sload 51;
+					sxor;
+					sstore 39;
+					sconst_4;
+					sload 64;
+					bspush 7;
+					ssub;
+					bspush 15;
+					sand;
+					smul;
+					sstore 63;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_3;
+					sadd;
+					saload;
+					sstore 57;
+					sload 39;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 39;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 39;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_2;
+					sadd;
+					saload;
+					sstore 57;
+					sload 38;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 38;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 38;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_1;
+					sadd;
+					saload;
+					sstore 57;
+					sload 37;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 37;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 37;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					saload;
+					sstore 57;
+					sload 36;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 36;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 36;
+					sconst_4;
+					sload 64;
+					bspush 15;
+					ssub;
+					bspush 15;
+					sand;
+					smul;
+					sstore 63;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					saload;
+					sstore 32;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_1;
+					sadd;
+					saload;
+					sstore 33;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_2;
+					sadd;
+					saload;
+					sstore 34;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_3;
+					sadd;
+					saload;
+					sstore 35;
+					sload 32;
+					sconst_1;
+					sushr;
+					sspush 32767;
+					sand;
+					sload 35;
+					bspush 15;
+					sshl;
+					sor;
+					sstore 40;
+					sload 33;
+					sconst_1;
+					sushr;
+					sspush 32767;
+					sand;
+					sload 32;
+					bspush 15;
+					sshl;
+					sor;
+					sstore 41;
+					sload 34;
+					sconst_1;
+					sushr;
+					sspush 32767;
+					sand;
+					sload 33;
+					bspush 15;
+					sshl;
+					sor;
+					sstore 42;
+					sload 35;
+					sconst_1;
+					sushr;
+					sspush 32767;
+					sand;
+					sload 34;
+					bspush 15;
+					sshl;
+					sor;
+					sstore 43;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 35;
+					bspush 8;
+					sshl;
+					sor;
+					sstore 44;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 32;
+					bspush 8;
+					sshl;
+					sor;
+					sstore 45;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 33;
+					bspush 8;
+					sshl;
+					sor;
+					sstore 46;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 34;
+					bspush 8;
+					sshl;
+					sor;
+					sstore 47;
+					sload 32;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sstore 48;
+					sload 33;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 32;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 49;
+					sload 34;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 33;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 50;
+					sload 35;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 34;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 51;
+					sload 40;
+					sload 44;
+					sxor;
+					sload 48;
+					sxor;
+					sstore 32;
+					sload 41;
+					sload 45;
+					sxor;
+					sload 49;
+					sxor;
+					sstore 33;
+					sload 42;
+					sload 46;
+					sxor;
+					sload 50;
+					sxor;
+					sstore 34;
+					sload 43;
+					sload 47;
+					sxor;
+					sload 51;
+					sxor;
+					sstore 35;
+					sload 39;
+					sspush 255;
+					sand;
+					sload 35;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 39;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 39;
+					sload 38;
+					sspush 255;
+					sand;
+					sload 34;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 38;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 38;
+					sload 37;
+					sspush 255;
+					sand;
+					sload 33;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 37;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 37;
+					sload 36;
+					sspush 255;
+					sand;
+					sload 32;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 36;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 36;
+					sconst_4;
+					sload 64;
+					bspush 16;
+					ssub;
+					bspush 15;
+					sand;
+					smul;
+					sstore 63;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_3;
+					sadd;
+					saload;
+					sstore 57;
+					sload 39;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 39;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 39;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_2;
+					sadd;
+					saload;
+					sstore 57;
+					sload 38;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 38;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 38;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_1;
+					sadd;
+					saload;
+					sstore 57;
+					sload 37;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 37;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 37;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					saload;
+					sstore 57;
+					sload 36;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 36;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 36;
+					sconst_4;
+					sload 64;
+					bspush 15;
+					sand;
+					smul;
+					sstore 63;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sload 36;
+					sastore;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_1;
+					sadd;
+					sload 37;
+					sastore;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_2;
+					sadd;
+					sload 38;
+					sastore;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_3;
+					sadd;
+					sload 39;
+					sastore;
+				L4:	sload 28;
+					sstore 32;
+					sload 29;
+					sstore 33;
+					sload 30;
+					sstore 34;
+					sload 31;
+					sstore 35;
+					sload 16;
+					sstore 52;
+					sload 17;
+					sstore 53;
+					sload 18;
+					sstore 54;
+					sload 19;
+					sstore 55;
+					sload 52;
+					bspush 14;
+					sushr;
+					sconst_3;
+					sand;
+					sload 55;
+					sconst_2;
+					sshl;
+					sor;
+					sstore 40;
+					sload 53;
+					bspush 14;
+					sushr;
+					sconst_3;
+					sand;
+					sload 52;
+					sconst_2;
+					sshl;
+					sor;
+					sstore 41;
+					sload 54;
+					bspush 14;
+					sushr;
+					sconst_3;
+					sand;
+					sload 53;
+					sconst_2;
+					sshl;
+					sor;
+					sstore 42;
+					sload 55;
+					bspush 14;
+					sushr;
+					sconst_3;
+					sand;
+					sload 54;
+					sconst_2;
+					sshl;
+					sor;
+					sstore 43;
+					sload 55;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 54;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 44;
+					sload 52;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 55;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 45;
+					sload 53;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 52;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 46;
+					sload 54;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 53;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 47;
+					sload 54;
+					bspush 9;
+					sushr;
+					bspush 127;
+					sand;
+					sload 53;
+					bspush 7;
+					sshl;
+					sor;
+					sstore 48;
+					sload 55;
+					bspush 9;
+					sushr;
+					bspush 127;
+					sand;
+					sload 54;
+					bspush 7;
+					sshl;
+					sor;
+					sstore 49;
+					sload 52;
+					bspush 9;
+					sushr;
+					bspush 127;
+					sand;
+					sload 55;
+					bspush 7;
+					sshl;
+					sor;
+					sstore 50;
+					sload 53;
+					bspush 9;
+					sushr;
+					bspush 127;
+					sand;
+					sload 52;
+					bspush 7;
+					sshl;
+					sor;
+					sstore 51;
+					sload 40;
+					sload 44;
+					sxor;
+					sload 48;
+					sxor;
+					sstore 52;
+					sload 41;
+					sload 45;
+					sxor;
+					sload 49;
+					sxor;
+					sstore 53;
+					sload 42;
+					sload 46;
+					sxor;
+					sload 50;
+					sxor;
+					sstore 54;
+					sload 43;
+					sload 47;
+					sxor;
+					sload 51;
+					sxor;
+					sstore 55;
+					sload 35;
+					sspush 255;
+					sand;
+					sload 55;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 55;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 35;
+					sload 34;
+					sspush 255;
+					sand;
+					sload 54;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 54;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 34;
+					sload 33;
+					sspush 255;
+					sand;
+					sload 53;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 53;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 33;
+					sload 32;
+					sspush 255;
+					sand;
+					sload 52;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 52;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 32;
+					sload 16;
+					sload 20;
+					sand;
+					sload 16;
+					sconst_m1;
+					sxor;
+					sload 24;
+					sand;
+					sxor;
+					sstore 52;
+					sload 17;
+					sload 21;
+					sand;
+					sload 17;
+					sconst_m1;
+					sxor;
+					sload 25;
+					sand;
+					sxor;
+					sstore 53;
+					sload 18;
+					sload 22;
+					sand;
+					sload 18;
+					sconst_m1;
+					sxor;
+					sload 26;
+					sand;
+					sxor;
+					sstore 54;
+					sload 19;
+					sload 23;
+					sand;
+					sload 19;
+					sconst_m1;
+					sxor;
+					sload 27;
+					sand;
+					sxor;
+					sstore 55;
+					sload 35;
+					sspush 255;
+					sand;
+					sload 55;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 55;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 35;
+					sload 34;
+					sspush 255;
+					sand;
+					sload 54;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 54;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 34;
+					sload 33;
+					sspush 255;
+					sand;
+					sload 53;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 53;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 33;
+					sload 32;
+					sspush 255;
+					sand;
+					sload 52;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 52;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 32;
+					sload 64;
+					sconst_4;
+					smul;
+					sstore 62;
+					getstatic_a 104;		// reference tapdano/SHA512.primeSqrt
+					sload 62;
+					saload;
+					sstore 52;
+					getstatic_a 104;		// reference tapdano/SHA512.primeSqrt
+					sload 62;
+					sconst_1;
+					sadd;
+					saload;
+					sstore 53;
+					getstatic_a 104;		// reference tapdano/SHA512.primeSqrt
+					sload 62;
+					sconst_2;
+					sadd;
+					saload;
+					sstore 54;
+					getstatic_a 104;		// reference tapdano/SHA512.primeSqrt
+					sload 62;
+					sconst_3;
+					sadd;
+					saload;
+					sstore 55;
+					sload 35;
+					sspush 255;
+					sand;
+					sload 55;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 55;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 35;
+					sload 34;
+					sspush 255;
+					sand;
+					sload 54;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 54;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 34;
+					sload 33;
+					sspush 255;
+					sand;
+					sload 53;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 53;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 33;
+					sload 32;
+					sspush 255;
+					sand;
+					sload 52;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 52;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 32;
+					sconst_4;
+					sload 64;
+					bspush 15;
+					sand;
+					smul;
+					sstore 63;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_3;
+					sadd;
+					saload;
+					sstore 57;
+					sload 35;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 35;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_2;
+					sadd;
+					saload;
+					sstore 57;
+					sload 34;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 34;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					sconst_1;
+					sadd;
+					saload;
+					sstore 57;
+					sload 33;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 33;
+					getstatic_a 96;		// reference tapdano/SHA512.blk
+					sload 63;
+					saload;
+					sstore 57;
+					sload 32;
+					sspush 255;
+					sand;
+					sload 57;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 57;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 32;
+					sload_0;
+					sstore 36;
+					sload_1;
+					sstore 37;
+					sload_2;
+					sstore 38;
+					sload_3;
+					sstore 39;
+					sload 39;
+					bspush 12;
+					sushr;
+					bspush 15;
+					sand;
+					sload 38;
+					sconst_4;
+					sshl;
+					sor;
+					sstore 40;
+					sload 36;
+					bspush 12;
+					sushr;
+					bspush 15;
+					sand;
+					sload 39;
+					sconst_4;
+					sshl;
+					sor;
+					sstore 41;
+					sload 37;
+					bspush 12;
+					sushr;
+					bspush 15;
+					sand;
+					sload 36;
+					sconst_4;
+					sshl;
+					sor;
+					sstore 42;
+					sload 38;
+					bspush 12;
+					sushr;
+					bspush 15;
+					sand;
+					sload 37;
+					sconst_4;
+					sshl;
+					sor;
+					sstore 43;
+					sload 38;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 37;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 44;
+					sload 39;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 38;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 45;
+					sload 36;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 39;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 46;
+					sload 37;
+					sconst_2;
+					sushr;
+					sspush 16383;
+					sand;
+					sload 36;
+					bspush 14;
+					sshl;
+					sor;
+					sstore 47;
+					sload 38;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 37;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 48;
+					sload 39;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 38;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 49;
+					sload 36;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 39;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 50;
+					sload 37;
+					bspush 7;
+					sushr;
+					sspush 511;
+					sand;
+					sload 36;
+					bspush 9;
+					sshl;
+					sor;
+					sstore 51;
+					sload 40;
+					sload 44;
+					sxor;
+					sload 48;
+					sxor;
+					sstore 36;
+					sload 41;
+					sload 45;
+					sxor;
+					sload 49;
+					sxor;
+					sstore 37;
+					sload 42;
+					sload 46;
+					sxor;
+					sload 50;
+					sxor;
+					sstore 38;
+					sload 43;
+					sload 47;
+					sxor;
+					sload 51;
+					sxor;
+					sstore 39;
+					sload_0;
+					sload 4;
+					sand;
+					sload_0;
+					sload 8;
+					sand;
+					sxor;
+					sload 4;
+					sload 8;
+					sand;
+					sxor;
+					sstore 52;
+					sload_1;
+					sload 5;
+					sand;
+					sload_1;
+					sload 9;
+					sand;
+					sxor;
+					sload 5;
+					sload 9;
+					sand;
+					sxor;
+					sstore 53;
+					sload_2;
+					sload 6;
+					sand;
+					sload_2;
+					sload 10;
+					sand;
+					sxor;
+					sload 6;
+					sload 10;
+					sand;
+					sxor;
+					sstore 54;
+					sload_3;
+					sload 7;
+					sand;
+					sload_3;
+					sload 11;
+					sand;
+					sxor;
+					sload 7;
+					sload 11;
+					sand;
+					sxor;
+					sstore 55;
+					sload 39;
+					sspush 255;
+					sand;
+					sload 55;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 39;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 55;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 39;
+					sload 38;
+					sspush 255;
+					sand;
+					sload 54;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 38;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 54;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 38;
+					sload 37;
+					sspush 255;
+					sand;
+					sload 53;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 37;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 53;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 37;
+					sload 36;
+					sspush 255;
+					sand;
+					sload 52;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 36;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 52;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 36;
+					sload 24;
+					sstore 28;
+					sload 25;
+					sstore 29;
+					sload 26;
+					sstore 30;
+					sload 27;
+					sstore 31;
+					sload 20;
+					sstore 24;
+					sload 21;
+					sstore 25;
+					sload 22;
+					sstore 26;
+					sload 23;
+					sstore 27;
+					sload 16;
+					sstore 20;
+					sload 17;
+					sstore 21;
+					sload 18;
+					sstore 22;
+					sload 19;
+					sstore 23;
+					sload 12;
+					sstore 16;
+					sload 13;
+					sstore 17;
+					sload 14;
+					sstore 18;
+					sload 15;
+					sstore 19;
+					sload 8;
+					sstore 12;
+					sload 9;
+					sstore 13;
+					sload 10;
+					sstore 14;
+					sload 11;
+					sstore 15;
+					sload 4;
+					sstore 8;
+					sload 5;
+					sstore 9;
+					sload 6;
+					sstore 10;
+					sload 7;
+					sstore 11;
+					sload_0;
+					sstore 4;
+					sload_1;
+					sstore 5;
+					sload_2;
+					sstore 6;
+					sload_3;
+					sstore 7;
+					sload 32;
+					sstore_0;
+					sload 33;
+					sstore_1;
+					sload 34;
+					sstore_2;
+					sload 35;
+					sstore_3;
+					sload_3;
+					sspush 255;
+					sand;
+					sload 39;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload_3;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 39;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore_3;
+					sload_2;
+					sspush 255;
+					sand;
+					sload 38;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload_2;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 38;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore_2;
+					sload_1;
+					sspush 255;
+					sand;
+					sload 37;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload_1;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 37;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore_1;
+					sload_0;
+					sspush 255;
+					sand;
+					sload 36;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload_0;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 36;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore_0;
+					sload 19;
+					sspush 255;
+					sand;
+					sload 35;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 19;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 35;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 19;
+					sload 18;
+					sspush 255;
+					sand;
+					sload 34;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 18;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 34;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 18;
+					sload 17;
+					sspush 255;
+					sand;
+					sload 33;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 17;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 33;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 17;
+					sload 16;
+					sspush 255;
+					sand;
+					sload 32;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 16;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 32;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sstore 16;
+					sload 64;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore 64;
+					goto_w L1;
+				L5:	getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_5;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload_3;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload_3;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_5;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_4;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload_2;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload_2;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_4;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_3;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload_1;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload_1;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_3;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_2;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload_0;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload_0;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					sconst_2;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 9;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 7;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 7;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 9;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 8;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 6;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 6;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 8;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 7;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 5;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 5;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 7;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 6;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 4;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 4;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 6;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 13;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 11;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 11;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 13;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 12;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 10;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 10;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 12;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 11;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 9;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 9;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 11;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 10;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 8;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 8;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 10;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 17;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 15;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 15;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 17;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 16;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 14;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 14;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 16;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 15;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 13;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 13;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 15;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 14;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 12;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 12;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 14;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 21;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 19;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 19;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 21;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 20;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 18;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 18;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 20;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 19;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 17;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 17;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 19;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 18;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 16;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 16;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 18;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 25;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 23;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 23;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 25;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 24;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 22;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 22;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 24;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 23;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 21;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 21;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 23;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 22;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 20;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 20;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 22;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 29;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 27;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 27;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 29;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 28;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 26;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 26;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 28;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 27;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 25;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 25;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 27;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 26;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 24;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 24;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 26;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 33;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 31;
+					sspush 255;
+					sand;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 31;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 33;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 32;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 30;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 30;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 32;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 31;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 29;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 29;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					sload 60;
+					bspush 8;
+					sushr;
+					sstore 58;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 31;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 30;
+					saload;
+					sstore 56;
+					sload 56;
+					sspush 255;
+					sand;
+					sload 28;
+					sspush 255;
+					sand;
+					sadd;
+					sload 58;
+					sadd;
+					sstore 59;
+					sload 56;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sload 28;
+					bspush 8;
+					sushr;
+					sspush 255;
+					sand;
+					sadd;
+					sload 59;
+					bspush 8;
+					sushr;
+					sadd;
+					sstore 60;
+					getstatic_a 95;		// reference tapdano/SHA512.working
+					bspush 30;
+					sload 60;
+					bspush 8;
+					sshl;
+					sload 59;
+					sspush 255;
+					sand;
+					sor;
+					sastore;
+					return;
+		}
+
+	}
+
+	.class public Secp256k1 6 extends 0.0 {		// extends java/lang/Object
+
+		.fields {
+			protected static final byte SECP256K1_K = 1;		// B
+			protected static final byte[] SECP256K1_FP 0 = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,-1,-1,-4,47};		// [B
+			protected static final byte[] SECP256K1_A 1 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};		// [B
+			protected static final byte[] SECP256K1_B 2 = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7};		// [B
+			protected static final byte[] SECP256K1_G 3 = {4,121,-66,102,126,-7,-36,-69,-84,85,-96,98,-107,-50,-121,11,7,2,-101,-4,-37,45,-50,40,-39,89,-14,-127,91,22,-8,23,-104,72,58,-38,119,38,-93,-60,101,93,-92,-5,-4,14,17,8,-88,-3,23,-76,72,-90,-123,84,25,-100,71,-48,-113,-5,16,-44,-72};		// [B
+			protected static final byte[] SECP256K1_R 4 = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-2,-70,-82,-36,-26,-81,72,-96,59,-65,-46,94,-116,-48,54,65,65};		// [B
+		}
+
+		.publicMethodTable 1 {
+			equals(Ljava/lang/Object;)Z;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public <init>()V 0 {
+			.stack 1;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 53;		// java/lang/Object.<init>()V
+					return;
+		}
+
+		.method protected static setCommonCurveParameters(Ljavacard/security/ECKey;)Z 1 {
+			.stack 4;
+			.locals 1;
+
+			.descriptor	Ljavacard/security/ECKey;	2.17;
+
+				L0:	aload_0;
+					getstatic_a 105;		// reference tapdano/Secp256k1.SECP256K1_A
+					sconst_0;
+					getstatic_a 105;		// reference tapdano/Secp256k1.SECP256K1_A
+					arraylength;
+					invokeinterface 4 36 3;		// javacard/security/ECKey
+					aload_0;
+					getstatic_a 106;		// reference tapdano/Secp256k1.SECP256K1_B
+					sconst_0;
+					getstatic_a 106;		// reference tapdano/Secp256k1.SECP256K1_B
+					arraylength;
+					invokeinterface 4 36 4;		// javacard/security/ECKey
+					aload_0;
+					getstatic_a 107;		// reference tapdano/Secp256k1.SECP256K1_FP
+					sconst_0;
+					getstatic_a 107;		// reference tapdano/Secp256k1.SECP256K1_FP
+					arraylength;
+					invokeinterface 4 36 0;		// javacard/security/ECKey
+					aload_0;
+					getstatic_a 108;		// reference tapdano/Secp256k1.SECP256K1_G
+					sconst_0;
+					getstatic_a 108;		// reference tapdano/Secp256k1.SECP256K1_G
+					arraylength;
+					invokeinterface 4 36 5;		// javacard/security/ECKey
+					aload_0;
+					getstatic_a 109;		// reference tapdano/Secp256k1.SECP256K1_R
+					sconst_0;
+					getstatic_a 109;		// reference tapdano/Secp256k1.SECP256K1_R
+					arraylength;
+					invokeinterface 4 36 6;		// javacard/security/ECKey
+					aload_0;
+					sconst_1;
+					invokeinterface 2 36 7;		// javacard/security/ECKey
+					sconst_1;
+				L1:	sreturn;
+				L2:	astore_1;
+					sconst_0;
+					sreturn;
+			.exceptionTable {
+				// start_block end_block handler_block catch_type_index
+				L0 L1 L2 43;
+			}
+		}
+
+	}
+
+	.class public TapDanoApplet 7 extends 1.3 {		// extends javacard/framework/Applet
+
+		.shareable;
+
+		.fields {
+			 byte[] priKeyEncoded 0;		// [B
+			 byte[] pubKeyEncoded 1;		// [B
+			 byte[] PIN 2;		// [B
+			 byte[] lastBuffer 3;		// [B
+			 byte[] lastResponse 4;		// [B
+			 byte[] POLICY_ID 5;		// [B
+			 byte[] TWO_FACTOR_KEY 6;		// [B
+			 byte[] LAST_SIGNATURE 7;		// [B
+			 byte[] dataToHash 8;		// [B
+			 byte[] inputPin 9;		// [B
+			 2.18 prikey 10;		// Ljavacard/security/ECPrivateKey;
+			 2.19 pubkey 11;		// Ljavacard/security/ECPublicKey;
+			 2.16 keypair 12;		// Ljavacard/security/KeyPair;
+			 2.15 signature 13;		// Ljavacard/security/Signature;
+			 2.11 sha256 14;		// Ljavacard/security/MessageDigest;
+			 boolean INITIALIZED 15;		// Z
+			 boolean PAIR_GENERATED 16;		// Z
+			 boolean SIGN_INITIALIZED 17;		// Z
+			 byte TAG_TYPE 18;		// B
+			 boolean TAG_EXTRACT_LOCKED 19;		// Z
+			 boolean PIN_LOCKED 20;		// Z
+			 short LAST_SIGNATURE_LENGTH 21;		// S
+			 short lastResponseLen 22;		// S
+			private static final byte[] HEX_CHARS = {48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70};		// [B
+		}
+
+		.publicMethodTable 5 {
+			equals(Ljava/lang/Object;)Z;
+			register()V;
+			register([BSB)V;
+			selectingApplet()Z;
+			deselect()V;
+			getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;
+			select()Z;
+			process(Ljavacard/framework/APDU;)V;
+			exec(B[BB)S;
+			processTapDano([BBS)S;
+			signData([BBSS)V;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.implementedInterfaceInfoTable { 
+			.interface 1.2 { 		// javacard/framework/Shareable
+			}
+
+			.interface TapDanoShareable { 
+				8;		// exec(B[BB)S
+			}
+
+		}
+
+		.method protected <init>([BSB)V 0 {
+			.stack 4;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 49;		// javacard/framework/Applet.<init>()V
+					aload_0;
+					sconst_0;
+					putfield_b 10;		// boolean tapdano/TapDanoApplet.INITIALIZED
+					aload_0;
+					sconst_0;
+					putfield_b 11;		// boolean tapdano/TapDanoApplet.PAIR_GENERATED
+					aload_0;
+					sconst_0;
+					putfield_b 12;		// boolean tapdano/TapDanoApplet.SIGN_INITIALIZED
+					aload_0;
+					bspush 32;
+					newarray 11;
+					putfield_a 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					aload_0;
+					bspush 65;
+					newarray 11;
+					putfield_a 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					aload_0;
+					sconst_4;
+					newarray 11;
+					putfield_a 15;		// reference tapdano/TapDanoApplet.PIN
+					aload_0;
+					sspush 256;
+					newarray 11;
+					putfield_a 16;		// reference tapdano/TapDanoApplet.lastBuffer
+					aload_0;
+					sspush 256;
+					newarray 11;
+					putfield_a 17;		// reference tapdano/TapDanoApplet.lastResponse
+					aload_0;
+					bspush 28;
+					newarray 11;
+					putfield_a 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					aload_0;
+					bspush 32;
+					newarray 11;
+					putfield_a 19;		// reference tapdano/TapDanoApplet.TWO_FACTOR_KEY
+					aload_0;
+					bspush 72;
+					newarray 11;
+					putfield_a 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					aload_0;
+					bspush 72;
+					putfield_s 21;		// short tapdano/TapDanoApplet.LAST_SIGNATURE_LENGTH
+					aload_0;
+					bspush 33;
+					newarray 11;
+					putfield_a 22;		// reference tapdano/TapDanoApplet.dataToHash
+					aload_0;
+					sconst_4;
+					newarray 11;
+					putfield_a 23;		// reference tapdano/TapDanoApplet.inputPin
+					aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					invokevirtual 124;		// register([BSB)V
+					return;
+		}
+
+		.method public static install([BSB)V 1 {
+			.stack 5;
+			.locals 3;
+
+				L0:	sload_1;
+					sstore_3;
+					aload_0;
+					sload_3;
+					sinc 3 1;
+					baload;
+					sstore 4;
+					sload_3;
+					sstore 5;
+					new 125;		// tapdano/TapDanoApplet
+					dup;
+					aload_0;
+					sload 5;
+					sload 4;
+					invokespecial 126;		// tapdano/TapDanoApplet.<init>([BSB)V
+					pop;
+					return;
+		}
+
+		.method public getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable; 5 {
+			.stack 1;
+			.locals 0;
+
+			.descriptor	Ljavacard/framework/AID;	1.6;
+			.descriptor	Ljavacard/framework/Shareable;	1.2;
+
+				L0:	aload_0;
+					areturn;
+		}
+
+		.method public select()Z 6 {
+			.stack 1;
+			.locals 0;
+
+				L0:	sconst_1;
+					sreturn;
+		}
+
+		.method public process(Ljavacard/framework/APDU;)V 7 {
+			.stack 4;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	getfield_b_this 10;		// boolean tapdano/TapDanoApplet.INITIALIZED
+					ifne L2;
+				L1:	aload_0;
+					invokespecial 127;		// tapdano/TapDanoApplet.initialize()V
+				L2:	aload_0;
+					invokevirtual 128;		// selectingApplet()Z
+					ifeq L4;
+				L3:	return;
+				L4:	aload_1;
+					invokevirtual 57;		// getBuffer()[B
+					astore_2;
+				L5:	aload_0;
+					aload_2;
+					sconst_0;
+					sconst_0;
+					invokevirtual 129;		// processTapDano([BBS)S
+					sstore_3;
+					aload_1;
+					sconst_0;
+					sload_3;
+					invokevirtual 59;		// setOutgoingAndSend(SS)V
+				L6:	goto L8;
+				L7:	astore_3;
+					sspush -255;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	return;
+			.exceptionTable {
+				// start_block end_block handler_block catch_type_index
+				L5 L6 L7 43;
+			}
+		}
+
+		.method public exec(B[BB)S 8 {
+			.stack 5;
+			.locals 7;
+
+				L0:	sload_1;
+					sconst_3;
+					if_scmpne L2;
+				L1:	sconst_1;
+					goto L3;
+				L2:	sconst_0;
+				L3:	sstore 4;
+					sload_1;
+					sconst_1;
+					if_scmpne L5;
+				L4:	sconst_1;
+					goto L6;
+				L5:	sconst_0;
+				L6:	sstore 5;
+					sload_1;
+					sconst_2;
+					if_scmpne L8;
+				L7:	sconst_1;
+					goto L9;
+				L8:	sconst_0;
+				L9:	sstore 6;
+					sconst_0;
+					sstore 7;
+					sconst_0;
+					sstore 8;
+					getfield_b_this 10;		// boolean tapdano/TapDanoApplet.INITIALIZED
+					ifne L11;
+				L10:	aload_0;
+					invokespecial 127;		// tapdano/TapDanoApplet.initialize()V
+				L11:	sload 5;
+					ifeq L13;
+				L12:	aload_0;
+					aload_2;
+					sload_3;
+					sconst_0;
+					invokevirtual 129;		// processTapDano([BBS)S
+					pop;
+					sconst_0;
+					sreturn;
+				L13:	sload 4;
+					ifeq_w L18;
+				L14:	aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush -127;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_1;
+					bastore;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					sconst_2;
+					smul;
+					sstore 8;
+					bspush 16;
+					sload 8;
+					sadd;
+					sstore 9;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sload 9;
+					bspush 8;
+					sshr;
+					s2b;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sload 9;
+					sspush 255;
+					sand;
+					s2b;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 85;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_4;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 116;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 97;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 112;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 100;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 97;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 110;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 111;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 46;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 99;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 111;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 109;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 47;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 63;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 116;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 61;
+					bastore;
+					sconst_0;
+					sstore 10;
+				L15:	sload 10;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					if_scmpge L17;
+				L16:	aload_2;
+					sload 7;
+					sinc 7 1;
+					getstatic_a 130;		// reference tapdano/TapDanoApplet.HEX_CHARS
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					sload 10;
+					baload;
+					sconst_4;
+					sshr;
+					bspush 15;
+					sand;
+					baload;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					getstatic_a 130;		// reference tapdano/TapDanoApplet.HEX_CHARS
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					sload 10;
+					baload;
+					bspush 15;
+					sand;
+					baload;
+					bastore;
+					sinc 10 1;
+					goto L15;
+				L17:	aload_2;
+					sload 7;
+					sinc 7 1;
+					bspush 69;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_0;
+					aload_2;
+					sload_3;
+					sload 7;
+					sconst_4;
+					sadd;
+					invokevirtual 129;		// processTapDano([BBS)S
+					sstore 8;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sload 8;
+					bspush 8;
+					sshr;
+					s2b;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sload 8;
+					sspush 255;
+					sand;
+					s2b;
+					bastore;
+					sload 7;
+					sload 8;
+					sadd;
+					sstore 7;
+					aload_2;
+					sconst_0;
+					sload 7;
+					sconst_2;
+					ssub;
+					bspush 8;
+					sshr;
+					s2b;
+					bastore;
+					aload_2;
+					sconst_1;
+					sload 7;
+					sconst_2;
+					ssub;
+					sspush 255;
+					sand;
+					s2b;
+					bastore;
+				L18:	sload 6;
+					ifeq L20;
+				L19:	aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_1;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload 7;
+					sinc 7 1;
+					sconst_1;
+					bastore;
+					aload_0;
+					aload_2;
+					sload_3;
+					sload 7;
+					invokevirtual 129;		// processTapDano([BBS)S
+					sstore 8;
+					sload 7;
+					sload 8;
+					sadd;
+					sstore 7;
+				L20:	sload 7;
+					sreturn;
+		}
+
+		.method public processTapDano([BBS)S 9 {
+			.stack 5;
+			.locals 2;
+
+				L0:	aload_1;
+					sload_2;
+					sconst_4;
+					sadd;
+					s2b;
+					baload;
+					sstore 4;
+					aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -95;
+					if_scmpne L2;
+				L1:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 131;		// tapdano/TapDanoApplet.burnTag([BBSS)V
+				L2:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -94;
+					if_scmpne L4;
+				L3:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokevirtual 132;		// signData([BBSS)V
+				L4:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -93;
+					if_scmpne L6;
+				L5:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 133;		// tapdano/TapDanoApplet.formatTag([BBSS)V
+				L6:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -92;
+					if_scmpne L8;
+				L7:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 134;		// tapdano/TapDanoApplet.lockTag([BBSS)V
+				L8:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -91;
+					if_scmpne L10;
+				L9:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 135;		// tapdano/TapDanoApplet.pinLock([BBSS)V
+				L10:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -90;
+					if_scmpne L12;
+				L11:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 136;		// tapdano/TapDanoApplet.pinUnlock([BBSS)V
+				L12:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -89;
+					if_scmpne L14;
+				L13:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 137;		// tapdano/TapDanoApplet.setPolicyId([BBSS)V
+				L14:	aload_1;
+					sload_2;
+					sconst_1;
+					sadd;
+					s2b;
+					baload;
+					bspush -80;
+					if_scmpne L16;
+				L15:	aload_1;
+					sload_3;
+					sconst_1;
+					invokestatic 138;		// javacard/framework/JCSystem.getAvailableMemory(B)S
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_1;
+					sload_3;
+					sconst_2;
+					sadd;
+					sconst_0;
+					invokestatic 138;		// javacard/framework/JCSystem.getAvailableMemory(B)S
+					invokestatic 83;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sconst_4;
+					sreturn;
+				L16:	aload_0;
+					aload_1;
+					sload_2;
+					sload_3;
+					sload 4;
+					invokespecial 139;		// tapdano/TapDanoApplet.getTagInfo([BBSS)S
+					sstore 5;
+					sload 5;
+					sreturn;
+		}
+
+		.method private initialize()V {
+			.stack 5;
+			.locals 0;
+
+				L0:	aload_0;
+					bspush 12;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 81;		// T_CLASSORINTERFACE javacard/security/ECPrivateKey
+					putfield_a 24;		// reference tapdano/TapDanoApplet.prikey
+					getfield_a_this 24;		// reference tapdano/TapDanoApplet.prikey
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+					aload_0;
+					bspush 11;
+					sspush 256;
+					sconst_0;
+					invokestatic 79;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					checkcast 0 146;		// T_CLASSORINTERFACE javacard/security/ECPublicKey
+					putfield_a 25;		// reference tapdano/TapDanoApplet.pubkey
+					getfield_a_this 25;		// reference tapdano/TapDanoApplet.pubkey
+					invokestatic 110;		// tapdano/Secp256k1.setCommonCurveParameters(Ljavacard/security/ECKey;)Z
+					pop;
+					aload_0;
+					new 32;		// javacard/security/KeyPair
+					dup;
+					getfield_a_this 25;		// reference tapdano/TapDanoApplet.pubkey
+					getfield_a_this 24;		// reference tapdano/TapDanoApplet.prikey
+					invokespecial 33;		// javacard/security/KeyPair.<init>(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V
+					putfield_a 26;		// reference tapdano/TapDanoApplet.keypair
+					aload_0;
+					bspush 33;
+					sconst_0;
+					invokestatic 117;		// javacard/security/Signature.getInstance(BZ)Ljavacard/security/Signature;
+					putfield_a 27;		// reference tapdano/TapDanoApplet.signature
+					aload_0;
+					sconst_4;
+					sconst_0;
+					invokestatic 111;		// javacard/security/MessageDigest.getInstance(BZ)Ljavacard/security/MessageDigest;
+					putfield_a 28;		// reference tapdano/TapDanoApplet.sha256
+					aload_0;
+					sconst_1;
+					putfield_b 10;		// boolean tapdano/TapDanoApplet.INITIALIZED
+					aload_0;
+					sconst_0;
+					putfield_b 12;		// boolean tapdano/TapDanoApplet.SIGN_INITIALIZED
+					aload_0;
+					sconst_0;
+					putfield_b 11;		// boolean tapdano/TapDanoApplet.PAIR_GENERATED
+					getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					sconst_0;
+					getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					arraylength;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					sconst_0;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					sconst_0;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					arraylength;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					getfield_a_this 19;		// reference tapdano/TapDanoApplet.TWO_FACTOR_KEY
+					sconst_0;
+					getfield_a_this 19;		// reference tapdano/TapDanoApplet.TWO_FACTOR_KEY
+					arraylength;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					getfield_a_this 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					sconst_0;
+					getfield_a_this 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					arraylength;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					aload_0;
+					bspush 72;
+					putfield_s 21;		// short tapdano/TapDanoApplet.LAST_SIGNATURE_LENGTH
+					return;
+		}
+
+		.method private getTagInfo([BBSS)S {
+			.stack 5;
+			.locals 2;
+
+				L0:	sconst_0;
+					sstore 5;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					bspush 84;
+					bastore;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					bspush 68;
+					bastore;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					sconst_2;
+					bastore;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					sconst_0;
+					bastore;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					getfield_b_this 11;		// boolean tapdano/TapDanoApplet.PAIR_GENERATED
+					ifeq L2;
+				L1:	sconst_1;
+					goto L3;
+				L2:	sconst_0;
+				L3:	bastore;
+					sconst_5;
+					sstore 5;
+					getfield_b_this 11;		// boolean tapdano/TapDanoApplet.PAIR_GENERATED
+					ifeq_w L23;
+				L4:	aload_1;
+					sload_3;
+					sinc 3 1;
+					getfield_b_this 29;		// byte tapdano/TapDanoApplet.TAG_TYPE
+					bastore;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					getfield_b_this 30;		// boolean tapdano/TapDanoApplet.TAG_EXTRACT_LOCKED
+					ifeq L6;
+				L5:	sconst_1;
+					goto L7;
+				L6:	sconst_0;
+				L7:	bastore;
+					aload_1;
+					sload_3;
+					sinc 3 1;
+					getfield_b_this 31;		// boolean tapdano/TapDanoApplet.PIN_LOCKED
+					ifeq L9;
+				L8:	sconst_1;
+					goto L10;
+				L9:	sconst_0;
+				L10:	bastore;
+					sinc 5 3;
+					getfield_b_this 29;		// byte tapdano/TapDanoApplet.TAG_TYPE
+					sconst_2;
+					if_scmpne L14;
+				L11:	getfield_b_this 30;		// boolean tapdano/TapDanoApplet.TAG_EXTRACT_LOCKED
+					ifne L14;
+				L12:	getfield_b_this 31;		// boolean tapdano/TapDanoApplet.PIN_LOCKED
+					ifne L14;
+				L13:	sconst_1;
+					goto L15;
+				L14:	sconst_0;
+				L15:	sstore 6;
+					sload 6;
+					ifeq L17;
+				L16:	getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					goto L18;
+				L17:	getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+				L18:	sconst_0;
+					aload_1;
+					sload_3;
+					sload 6;
+					ifeq L20;
+				L19:	getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					arraylength;
+					goto L21;
+				L20:	getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+				L21:	invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					sload_3;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					sadd;
+					sstore_3;
+					sload 5;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					sadd;
+					sstore 5;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					sconst_0;
+					aload_1;
+					sload_3;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					sload_3;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					arraylength;
+					sadd;
+					sstore_3;
+					sload 5;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					arraylength;
+					sadd;
+					sstore 5;
+					getfield_b_this 31;		// boolean tapdano/TapDanoApplet.PIN_LOCKED
+					ifne L23;
+				L22:	getfield_a_this 19;		// reference tapdano/TapDanoApplet.TWO_FACTOR_KEY
+					sconst_0;
+					aload_1;
+					sload_3;
+					getfield_a_this 19;		// reference tapdano/TapDanoApplet.TWO_FACTOR_KEY
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					sinc 3 32;
+					sinc 5 32;
+					getfield_a_this 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					sconst_0;
+					aload_1;
+					sload_3;
+					getfield_s_this 21;		// short tapdano/TapDanoApplet.LAST_SIGNATURE_LENGTH
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					sload_3;
+					getfield_s_this 21;		// short tapdano/TapDanoApplet.LAST_SIGNATURE_LENGTH
+					sadd;
+					sstore_3;
+					sload 5;
+					getfield_s_this 21;		// short tapdano/TapDanoApplet.LAST_SIGNATURE_LENGTH
+					sadd;
+					sstore 5;
+				L23:	sload 5;
+					sreturn;
+		}
+
+		.method private burnTag([BBSS)V {
+			.stack 6;
+			.locals 2;
+
+				L0:	aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					baload;
+					sstore 5;
+					aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					sconst_1;
+					sadd;
+					baload;
+					sstore 6;
+					getfield_b_this 11;		// boolean tapdano/TapDanoApplet.PAIR_GENERATED
+					ifeq L2;
+				L1:	return;
+				L2:	sload 5;
+					sconst_2;
+					if_scmpne L5;
+				L3:	sload 6;
+					sconst_1;
+					if_scmpne L5;
+				L4:	return;
+				L5:	aload_0;
+					sload 6;
+					putfield_b 29;		// byte tapdano/TapDanoApplet.TAG_TYPE
+					aload_0;
+					sload 6;
+					sconst_1;
+					if_scmpne L7;
+				L6:	sconst_1;
+					goto L8;
+				L7:	sconst_0;
+				L8:	putfield_b 30;		// boolean tapdano/TapDanoApplet.TAG_EXTRACT_LOCKED
+					aload_0;
+					sconst_0;
+					putfield_b 31;		// boolean tapdano/TapDanoApplet.PIN_LOCKED
+					sload 5;
+					sconst_1;
+					if_scmpne L10;
+				L9:	getfield_a_this 26;		// reference tapdano/TapDanoApplet.keypair
+					invokevirtual 149;		// genKeyPair()V
+					aload_0;
+					getfield_a_this 26;		// reference tapdano/TapDanoApplet.keypair
+					invokevirtual 35;		// getPrivate()Ljavacard/security/PrivateKey;
+					checkcast 0 81;		// T_CLASSORINTERFACE javacard/security/ECPrivateKey
+					putfield_a 24;		// reference tapdano/TapDanoApplet.prikey
+					aload_0;
+					getfield_a_this 26;		// reference tapdano/TapDanoApplet.keypair
+					invokevirtual 37;		// getPublic()Ljavacard/security/PublicKey;
+					checkcast 0 146;		// T_CLASSORINTERFACE javacard/security/ECPublicKey
+					putfield_a 25;		// reference tapdano/TapDanoApplet.pubkey
+					getfield_a_this 24;		// reference tapdano/TapDanoApplet.prikey
+					getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					sconst_0;
+					invokeinterface 3 81 19;		// javacard/security/ECPrivateKey
+					pop;
+					getfield_a_this 25;		// reference tapdano/TapDanoApplet.pubkey
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					sconst_0;
+					invokeinterface 3 146 19;		// javacard/security/ECPublicKey
+					pop;
+				L10:	sload 5;
+					sconst_2;
+					if_scmpne L12;
+				L11:	getfield_a_this 24;		// reference tapdano/TapDanoApplet.prikey
+					aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					sconst_2;
+					sadd;
+					getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					arraylength;
+					invokeinterface 4 81 18;		// javacard/security/ECPrivateKey
+					getfield_a_this 25;		// reference tapdano/TapDanoApplet.pubkey
+					aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					bspush 34;
+					sadd;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					invokeinterface 4 146 18;		// javacard/security/ECPublicKey
+					aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					sconst_2;
+					sadd;
+					getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					sconst_0;
+					getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					bspush 34;
+					sadd;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					sconst_0;
+					getfield_a_this 14;		// reference tapdano/TapDanoApplet.pubKeyEncoded
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+				L12:	getfield_a_this 13;		// reference tapdano/TapDanoApplet.priKeyEncoded
+					sconst_0;
+					getfield_a_this 22;		// reference tapdano/TapDanoApplet.dataToHash
+					sconst_0;
+					bspush 32;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					getfield_a_this 22;		// reference tapdano/TapDanoApplet.dataToHash
+					bspush 32;
+					sconst_1;
+					bastore;
+					getfield_a_this 28;		// reference tapdano/TapDanoApplet.sha256
+					getfield_a_this 22;		// reference tapdano/TapDanoApplet.dataToHash
+					sconst_0;
+					getfield_a_this 22;		// reference tapdano/TapDanoApplet.dataToHash
+					arraylength;
+					getfield_a_this 19;		// reference tapdano/TapDanoApplet.TWO_FACTOR_KEY
+					sconst_0;
+					invokevirtual 150;		// doFinal([BSS[BS)S
+					pop;
+					aload_0;
+					sconst_1;
+					putfield_b 11;		// boolean tapdano/TapDanoApplet.PAIR_GENERATED
+					return;
+		}
+
+		.method public signData([BBSS)V 10 {
+			.stack 7;
+			.locals 0;
+
+				L0:	getfield_b_this 12;		// boolean tapdano/TapDanoApplet.SIGN_INITIALIZED
+					ifne L2;
+				L1:	getfield_a_this 27;		// reference tapdano/TapDanoApplet.signature
+					getfield_a_this 24;		// reference tapdano/TapDanoApplet.prikey
+					sconst_1;
+					invokevirtual 41;		// init(Ljavacard/security/Key;B)V
+					aload_0;
+					sconst_1;
+					putfield_b 12;		// boolean tapdano/TapDanoApplet.SIGN_INITIALIZED
+				L2:	getfield_a_this 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					sconst_0;
+					getfield_a_this 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					arraylength;
+					sconst_0;
+					invokestatic 40;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+					aload_0;
+					getfield_a_this 27;		// reference tapdano/TapDanoApplet.signature
+					aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					sload 4;
+					getfield_a_this 20;		// reference tapdano/TapDanoApplet.LAST_SIGNATURE
+					sconst_0;
+					invokevirtual 151;		// signPreComputedHash([BSS[BS)S
+					putfield_s 21;		// short tapdano/TapDanoApplet.LAST_SIGNATURE_LENGTH
+					return;
+		}
+
+		.method private formatTag([BBSS)V {
+			.stack 1;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 127;		// tapdano/TapDanoApplet.initialize()V
+					return;
+		}
+
+		.method private lockTag([BBSS)V {
+			.stack 2;
+			.locals 0;
+
+				L0:	aload_0;
+					sconst_1;
+					putfield_b 30;		// boolean tapdano/TapDanoApplet.TAG_EXTRACT_LOCKED
+					return;
+		}
+
+		.method private pinLock([BBSS)V {
+			.stack 5;
+			.locals 0;
+
+				L0:	aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					getfield_a_this 15;		// reference tapdano/TapDanoApplet.PIN
+					sconst_0;
+					getfield_a_this 15;		// reference tapdano/TapDanoApplet.PIN
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					aload_0;
+					sconst_1;
+					putfield_b 31;		// boolean tapdano/TapDanoApplet.PIN_LOCKED
+					return;
+		}
+
+		.method private pinUnlock([BBSS)V {
+			.stack 5;
+			.locals 0;
+
+				L0:	aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					getfield_a_this 23;		// reference tapdano/TapDanoApplet.inputPin
+					sconst_0;
+					getfield_a_this 23;		// reference tapdano/TapDanoApplet.inputPin
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					getfield_a_this 23;		// reference tapdano/TapDanoApplet.inputPin
+					sconst_0;
+					getfield_a_this 15;		// reference tapdano/TapDanoApplet.PIN
+					sconst_0;
+					getfield_a_this 15;		// reference tapdano/TapDanoApplet.PIN
+					arraylength;
+					invokestatic 152;		// javacard/framework/Util.arrayCompare([BS[BSS)B
+					ifne L2;
+				L1:	aload_0;
+					sconst_0;
+					putfield_b 31;		// boolean tapdano/TapDanoApplet.PIN_LOCKED
+				L2:	return;
+		}
+
+		.method private setPolicyId([BBSS)V {
+			.stack 5;
+			.locals 0;
+
+				L0:	aload_1;
+					sload_2;
+					sconst_5;
+					sadd;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					sconst_0;
+					getfield_a_this 18;		// reference tapdano/TapDanoApplet.POLICY_ID
+					arraylength;
+					invokestatic 148;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					return;
+		}
+
+	}
+
+	.class public AppletInstaller 8 extends 1.3 {		// extends javacard/framework/Applet
+
+		.publicMethodTable 7 {
+			equals(Ljava/lang/Object;)Z;
+			register()V;
+			register([BSB)V;
+			selectingApplet()Z;
+			deselect()V;
+			getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;
+			select()Z;
+			process(Ljavacard/framework/APDU;)V;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method private <init>([BSB)V {
+			.stack 1;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 49;		// javacard/framework/Applet.<init>()V
+					return;
+		}
+
+		.method public static install([BSB)V 0 {
+			.stack 3;
+			.locals 0;
+
+				L0:	aload_0;
+					sload_1;
+					sconst_1;
+					sadd;
+					baload;
+					slookupswitch L4 3 -96 L2 -46 L3 84 L1;
+				L1:	aload_0;
+					sload_1;
+					sload_2;
+					invokestatic 153;		// tapdano/TapDanoApplet.install([BSB)V
+					goto L5;
+				L2:	aload_0;
+					sload_1;
+					sload_2;
+					invokestatic 154;		// tapdano/FIDO2Applet.install([BSB)V
+					goto L5;
+				L3:	aload_0;
+					sload_1;
+					sload_2;
+					invokestatic 155;		// tapdano/NDEFApplet.install([BSB)V
+					goto L5;
+				L4:	sspush 27266;
+					invokestatic 60;		// javacard/framework/ISOException.throwIt(S)V
+				L5:	return;
+		}
+
+		.method public process(Ljavacard/framework/APDU;)V 7 {
+			.stack 0;
+			.locals 0;
+
+			.descriptor	Ljavacard/framework/APDU;	1.10;
+
+				L0:	return;
+		}
+
+	}
+
+}
