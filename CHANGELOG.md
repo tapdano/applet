@@ -15,3 +15,11 @@
 - **Repository:** [tapdano/applet · sec256k1-integration](https://github.com/tapdano/applet/tree/sec256k1-integration)  
 - **CAP Checksum:** `9c82fb553785c9dc1084092ec2ef5e5394db75984b74d4c485db94f2711dfbe9`  
 - **Note:** One card was discarded due to being locked and inaccessible.  
+
+### Firmware Release Generation
+- **Version:** 0300  
+- **Branch:** `ndef-full`  
+- **Repository:** [tapdano/applet · release/0300](https://github.com/tapdano/applet/tree/ndef-full/release/0300)
+- **CAP Checksum:** `62a2f87a84789754214198e0bbca7f6690ecd23599f9accd44df0be1b8800efb`  
+- **JAVA_HOME:** `jdk1.8.0_351`
+- **JC_HOME:** `JCDK3.0.4_ClassicEdition`
